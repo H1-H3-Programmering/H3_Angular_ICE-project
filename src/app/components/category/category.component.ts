@@ -14,9 +14,9 @@ export class CategoryComponent {
 
   //Version 2
   categoryList2: Category[] = [
-    { CategoryId: 1, Name: 'Hans' },
-    { CategoryId: 2, Name: 'Jens' },
-    { CategoryId: 3, Name: 'Peter' },
+    { categoryId: 1, name: 'Hans' },
+    { categoryId: 2, name: 'Jens' },
+    { categoryId: 3, name: 'Peter' },
   ];
 
   ngOnInit(): void {

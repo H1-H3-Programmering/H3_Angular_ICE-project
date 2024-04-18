@@ -3,6 +3,6 @@
 
 export class Category
 {
-    CategoryId? : number = 0;
-    Name? : string = '';
+    categoryId? : number = 0;
+    name? : string = '';
 }
