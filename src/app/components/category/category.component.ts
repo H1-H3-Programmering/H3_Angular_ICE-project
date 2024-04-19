@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Category } from '../../models/Category';
-import { CategoryService } from '../../services/category.service';
+import { ICEServiceService } from '../../services/ice-service.service';
 
 @Component({
   selector: 'app-category',
@@ -40,13 +40,11 @@ export class CategoryComponent {
     this.service.getAll().subscribe(data => {
       this.categoryList = data;
       console.log(data)
-      console.log(this.categoryList);
-
     });
 
   } //End of ngOnInit
 
-  constructor(private service: CategoryService) {
+  constructor(private service: ICEServiceService) {
 
 
   }

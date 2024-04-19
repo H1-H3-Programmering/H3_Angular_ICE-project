@@ -13,6 +13,7 @@ import { Users } from '../models/Users';
   providedIn: 'root',
 })
 export class ICEServiceService {
+  urlCategory: string = 'https://localhost:7266/api/Category';
   urlIngredient: string = 'https://localhost:7266/api/Ingredient';
   urlKitchen: string = 'https://localhost:7266/api/Kitchen';
   urlRecipe: string = 'https://localhost:7266/api/Recipe';
@@ -21,6 +22,10 @@ export class ICEServiceService {
   urlUsers: string = 'https://localhost:7266/api/Users';
 
   constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.urlCategory);
+  }
 
   getAllIngredients(): Observable<Ingredient[]> {
     return this.http.get<Ingredient[]>(this.urlIngredient);
