@@ -7,11 +7,11 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CategoryService {
-  url: string = 'https://localhost:7266/api/Category';
+  urlCategory: string = 'https://localhost:7266/api/Category';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Category[]> {
-    return this.http.get<Category[]>(this.url);
+    return this.http.get<Category[]>(this.urlCategory);
   }
 
   //Version 3
