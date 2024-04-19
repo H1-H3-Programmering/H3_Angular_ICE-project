@@ -12,6 +12,7 @@ import { RecipeComponent } from './components/recipe/recipe.component';
 import { ReviewComponent } from './components/review/review.component';
 import { UserFavoriteComponent } from './components/user-favorite/user-favorite.component';
 import { UsersComponent } from './components/users/users.component';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -23,17 +24,15 @@ import { UsersComponent } from './components/users/users.component';
     RecipeComponent,
     ReviewComponent,
     UserFavoriteComponent,
-    UsersComponent
+    UsersComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
-  providers: [
-    provideClientHydration()
-  ],
-  bootstrap: [AppComponent]
+  providers: [provideClientHydration()],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
