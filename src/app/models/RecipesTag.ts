@@ -1,1 +1,5 @@
-export class RecipesTag {}
+export class RecipesTag {
+  RecipeTagId?: number = 0;
+  RecipeId?: number = 0;
+  Tag?: string = '';
+}
