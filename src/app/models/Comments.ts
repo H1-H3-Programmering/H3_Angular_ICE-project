@@ -1,6 +1,6 @@
 export class Comments {
-  CommentId?: number = 0;
-  UserId?: number = 0;
-  RecipeId?: number = 0;
-  Text?: string = '';
+  commentId?: number = 0;
+  userId?: number = 0;
+  recipeId?: number = 0;
+  text?: string = '';
 }

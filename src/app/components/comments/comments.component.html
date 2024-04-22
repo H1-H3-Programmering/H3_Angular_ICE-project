@@ -1,1 +1,15 @@
 <p>comments works!</p>
+
+
+<div>
+  <h2>Comments</h2>
+  <ul>
+    <li *ngFor="let comment of commentsList">
+      <p>Comment ID: {{ comment.commentId }}</p>
+      <p>User ID: {{ comment.userId }}</p>
+      <p>Recipe ID: {{ comment.recipeId }}</p>
+      <p>Text: {{ comment.text }}</p>
+    </li>
+  </ul>
+</div>
+

@@ -1,5 +1,5 @@
 export class Regions {
-  RegionId?: number = 0;
-  RegionName?: string = '';
-  CountryId?: number = 0;
+  regionId?: number = 0;
+  regionName?: string = '';
+  countryId?: number = 0;
 }

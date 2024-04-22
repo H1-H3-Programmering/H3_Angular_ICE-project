@@ -1,5 +1,5 @@
 export class RecipesTag {
-  RecipeTagId?: number = 0;
-  RecipeId?: number = 0;
-  Tag?: string = '';
+  recipeTagId?: number = 0;
+  recipeId?: number = 0;
+  tag?: string = '';
 }

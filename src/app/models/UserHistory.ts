@@ -1,5 +1,5 @@
 export class UserHistory {
-  UserHistoryId?: number = 0;
-  UserId?: number = 0;
-  RecipeId?: number = 0;
+  userHistoryId?: number = 0;
+  userId?: number = 0;
+  recipeId?: number = 0;
 }

@@ -1,5 +1,5 @@
 export class Language {
-  LanguageId?: number = 0;
-  LanguageName?: string = '';
-  CountryId?: number = 0;
+  languageId?: number = 0;
+  languageName?: string = '';
+  countryId?: number = 0;
 }

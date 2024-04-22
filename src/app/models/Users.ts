@@ -1,9 +1,9 @@
 export class Users {
-  UserId?: number = 0;
-  Username?: string = '';
-  Email?: string = '';
-  Password?: string = '';
-  CommentId?: number = 0;
-  DietaryPreference?: number = 0;
-  ReviewId?: number = 0;
+  userId?: number = 0;
+  username?: string = '';
+  email?: string = '';
+  password?: string = '';
+  commentId?: number = 0;
+  dietaryPreference?: number = 0;
+  reviewId?: number = 0;
 }

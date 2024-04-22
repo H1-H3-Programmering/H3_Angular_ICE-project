@@ -1,5 +1,5 @@
 export class UserPreferences {
-  PreferenceId?: number = 0;
-  PreferenceType?: string = '';
-  PreferenceDisription?: string = '';
+  preferenceId?: number = 0;
+  preferenceType?: string = '';
+  preferenceDisription?: string = '';
 }

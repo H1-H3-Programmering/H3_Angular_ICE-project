@@ -1,5 +1,5 @@
 export class Countries {
-  CountryId?: number = 0;
-  CountryName?: string = '';
-  Continent?: string = '';
+  countryId?: number = 0;
+  countryName?: string = '';
+  continent?: string = '';
 }

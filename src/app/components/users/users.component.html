@@ -1,1 +1,12 @@
 <p>users works!</p>
+
+<div>
+  <h2>Users</h2>
+  <ul>
+    <li *ngFor="let users of usersList">
+      <p>User ID: {{ users.userId }}</p>
+      <p>Username: {{ users.username }}</p>
+      <p>Email: {{ users.email }}</p>
+    </li>
+  </ul>
+</div>

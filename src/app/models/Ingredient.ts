@@ -1,5 +1,5 @@
 export class Ingredient {
-  IngredientsId?: number = 0;
-  Name?: string = '';
-  CategoryId?: number = 0;
+  ingredientsId?: number = 0;
+  name?: string = '';
+  categoryId?: number = 0;
 }
