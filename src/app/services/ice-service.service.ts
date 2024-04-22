@@ -16,31 +16,32 @@ import { RecipesTag } from '../models/RecipesTag';
 import { Regions } from '../models/Regions';
 import { UserHistory } from '../models/UserHistory';
 import { UserPreferences } from '../models/UserPreferences';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ICEServiceService {
-  urlCategory: string = 'https://localhost:7266/api/Category';
-  urlIngredient: string = 'https://localhost:7266/api/Ingredient';
-  urlKitchen: string = 'https://localhost:7266/api/Kitchen';
-  urlRecipe: string = 'https://localhost:7266/api/Recipe';
-  urlReview: string = 'https://localhost:7266/api/Review';
-  urlUserFavorite: string = 'https://localhost:7266/api/UserFavorite';
-  urlUsers: string = 'https://localhost:7266/api/Users';
-  urlComment: string = 'https://localhost:7266/api/Comment';
-  urlCountry: string = 'https://localhost:7266/api/Country';
-  urlDietaryPreference: string = 'https://localhost:7266/api/DietaryPreference';
-  urlLanguage: string = 'https://localhost:7266/api/Language';
-  urlRecipeTag: string = 'https://localhost:7266/api/RecipeTag';
-  urlRegion: string = 'https://localhost:7266/api/Region';
-  urlUserHistory: string = 'https://localhost:7266/api/UserHistory';
-  urlUserPreference: string = 'https://localhost:7266/api/UserPreference';
+export class ICEServiceService<ICEentity> {
+  urlCategory: string = environment.apiUrl + 'Category';
+  urlIngredient: string = environment.apiUrl + 'Ingredient';
+  urlKitchen: string = environment.apiUrl + 'Kitchen';
+  urlRecipe: string = environment.apiUrl + 'Recipe';
+  urlReview: string = environment.apiUrl + 'Review';
+  urlUserFavorite: string = environment.apiUrl + 'UserFavorite';
+  urlUsers: string = environment.apiUrl + 'Users';
+  urlComment: string = environment.apiUrl + 'Comment';
+  urlCountry: string = environment.apiUrl + 'Country';
+  urlDietaryPreference: string = environment.apiUrl + 'DietaryPreference';
+  urlLanguage: string = environment.apiUrl + 'Language';
+  urlRecipeTag: string = environment.apiUrl + 'RecipeTag';
+  urlRegion: string = environment.apiUrl + 'Region';
+  urlUserHistory: string = environment.apiUrl + 'UserHistory';
+  urlUserPreference: string = environment.apiUrl + 'UserPreference';
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Category[]> {
-    return this.http.get<Category[]>(this.urlCategory);
+  getAll(): Observable<ICEentity[]> {
+    return this.http.get<ICEentity[]>(this.urlCategory);
   }
 
   getAllIngredients(): Observable<Ingredient[]> {
