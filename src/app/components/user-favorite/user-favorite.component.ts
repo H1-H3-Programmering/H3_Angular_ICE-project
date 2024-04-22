@@ -17,5 +17,5 @@ export class UserFavoriteComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<UserFavorite>) {}
 }

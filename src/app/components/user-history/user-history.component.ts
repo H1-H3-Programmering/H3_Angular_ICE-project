@@ -17,5 +17,5 @@ export class UserHistoryComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<UserHistory>) {}
 }

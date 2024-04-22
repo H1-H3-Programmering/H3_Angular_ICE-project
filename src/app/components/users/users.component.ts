@@ -17,5 +17,5 @@ export class UsersComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Users>) {}
 }

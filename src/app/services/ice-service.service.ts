@@ -16,7 +16,7 @@ import { RecipesTag } from '../models/RecipesTag';
 import { Regions } from '../models/Regions';
 import { UserHistory } from '../models/UserHistory';
 import { UserPreferences } from '../models/UserPreferences';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +42,12 @@ export class ICEServiceService<ICEentity> {
 
   getAll(): Observable<ICEentity[]> {
     return this.http.get<ICEentity[]>(this.urlCategory);
+  }
+
+  delete(name:string,entityToDelete:number):boolean{
+    this.http.delete(this.urlCategory);
+    this.http.delete('https://localhost:7266/api/'+ name +'/'+entityToDelete);
+    return true
   }
 
   getAllIngredients(): Observable<Ingredient[]> {

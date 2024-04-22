@@ -17,5 +17,5 @@ export class CommentsComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Comments>) {}
 }

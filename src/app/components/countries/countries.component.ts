@@ -17,5 +17,5 @@ export class CountriesComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Countries>) {}
 }

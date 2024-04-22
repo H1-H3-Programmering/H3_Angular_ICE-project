@@ -17,5 +17,5 @@ export class DietaryPreferencesComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<DietaryPreferences>) {}
 }

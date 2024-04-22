@@ -44,7 +44,7 @@ export class CategoryComponent {
 
   } //End of ngOnInit
 
-  constructor(private service: ICEServiceService) {
+  constructor(private service: ICEServiceService<Category>) {
 
 
   }

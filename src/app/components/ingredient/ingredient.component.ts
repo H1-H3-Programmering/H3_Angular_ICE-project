@@ -21,7 +21,7 @@ export class IngredientComponent {
 
   }
 
-  constructor(private service: ICEServiceService){}
+  constructor(private service: ICEServiceService<Ingredient>){}
 
 
 }

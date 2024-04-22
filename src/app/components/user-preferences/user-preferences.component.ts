@@ -17,5 +17,5 @@ export class UserPreferencesComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<UserPreferences>) {}
 }

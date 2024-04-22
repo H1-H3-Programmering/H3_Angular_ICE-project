@@ -18,5 +18,5 @@ export class KitchenComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Kitchen>) {}
 }

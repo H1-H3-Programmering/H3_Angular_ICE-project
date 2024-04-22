@@ -17,5 +17,5 @@ export class RecipesTagComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<RecipesTag>) {}
 }

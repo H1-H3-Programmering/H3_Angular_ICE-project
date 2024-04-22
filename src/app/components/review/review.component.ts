@@ -17,5 +17,5 @@ export class ReviewComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Review>) {}
 }

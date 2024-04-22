@@ -17,5 +17,5 @@ export class LanguageComponent {
     });
   }
 
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Language>) {}
 }

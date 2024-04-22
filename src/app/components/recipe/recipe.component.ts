@@ -16,5 +16,5 @@ export class RecipeComponent {
       console.log(data);
     });
   }
-  constructor(private service: ICEServiceService) {}
+  constructor(private service: ICEServiceService<Recipe>) {}
 }
