@@ -8,6 +8,14 @@ import { Recipe } from '../models/Recipe';
 import { Review } from '../models/Review';
 import { UserFavorite } from '../models/UserFavorite';
 import { Users } from '../models/Users';
+import { Comments } from '../models/Comments';
+import { Countries } from '../models/Countries';
+import { DietaryPreferences } from '../models/DietaryPreferences';
+import { Language } from '../models/Language';
+import { RecipesTag } from '../models/RecipesTag';
+import { Regions } from '../models/Regions';
+import { UserHistory } from '../models/UserHistory';
+import { UserPreferences } from '../models/UserPreferences';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +28,14 @@ export class ICEServiceService {
   urlReview: string = 'https://localhost:7266/api/Review';
   urlUserFavorite: string = 'https://localhost:7266/api/UserFavorite';
   urlUsers: string = 'https://localhost:7266/api/Users';
+  urlComment: string = 'https://localhost:7266/api/Comment';
+  urlCountry: string = 'https://localhost:7266/api/Country';
+  urlDietaryPreference: string = 'https://localhost:7266/api/DietaryPreference';
+  urlLanguage: string = 'https://localhost:7266/api/Language';
+  urlRecipeTag: string = 'https://localhost:7266/api/RecipeTag';
+  urlRegion: string = 'https://localhost:7266/api/Region';
+  urlUserHistory: string = 'https://localhost:7266/api/UserHistory';
+  urlUserPreference: string = 'https://localhost:7266/api/UserPreference';
 
   constructor(private http: HttpClient) {}
 
@@ -49,5 +65,37 @@ export class ICEServiceService {
 
   getAllUsers(): Observable<Users[]> {
     return this.http.get<Users[]>(this.urlUsers);
+  }
+
+  getAllComments(): Observable<Comments[]> {
+    return this.http.get<Comments[]>(this.urlComment);
+  }
+
+  getAllCountries(): Observable<Countries[]> {
+    return this.http.get<Countries[]>(this.urlCountry);
+  }
+
+  getAllDietaryPreferences(): Observable<DietaryPreferences[]> {
+    return this.http.get<DietaryPreferences[]>(this.urlDietaryPreference);
+  }
+
+  getAllLanguage(): Observable<Language[]> {
+    return this.http.get<Language[]>(this.urlLanguage);
+  }
+
+  getAllRecipesTag(): Observable<RecipesTag[]> {
+    return this.http.get<RecipesTag[]>(this.urlRecipeTag);
+  }
+
+  getAllRegions(): Observable<Regions[]> {
+    return this.http.get<Regions[]>(this.urlRegion);
+  }
+
+  getAllUserHistory(): Observable<UserHistory[]> {
+    return this.http.get<UserHistory[]>(this.urlUserHistory);
+  }
+
+  getAllUserPreferences(): Observable<UserPreferences[]> {
+    return this.http.get<UserPreferences[]>(this.urlUserPreference);
   }
 }
