@@ -40,7 +40,7 @@ export class ICEServiceService<ICEentity> {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<ICEentity[]> {
+  getAllCategory(): Observable<ICEentity[]> {
     return this.http.get<ICEentity[]>(this.urlCategory);
   }
 
@@ -52,7 +52,7 @@ export class ICEServiceService<ICEentity> {
   //   return true;
   // }
 
-  deleteById(entityId: number = 1): Observable<any> {
+  deleteByCategoryId(entityId: number = 1): Observable<any> {
     const url = `${environment.apiUrl}Category/${entityId}`;
     return this.http.delete(url);
   }

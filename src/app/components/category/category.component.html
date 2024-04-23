@@ -2,5 +2,9 @@
 
 <button (click)="getAll()">Get All</button>
 
-<button (click)="deleteById(2)">Delete 1</button>
+<select [(ngModel)]="selectedEntityId">
+  <option *ngFor="let category of categoryList" [value]="category.categoryId">{{ category.name }}</option>
+</select>
+
+<button (click)="confirmDelete()">Confirm Delete</button>
 
