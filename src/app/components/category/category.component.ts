@@ -20,26 +20,13 @@ export class CategoryComponent {
   ];
 
   ngOnInit(): void {
-    // this.category = {
-    //   CategoryId: 1,
-    //   Name: 'Hans',
-    // };
-    //version 1
-    // this.categoryList = [
-    //   {CategoryId:1, Name:'Hans'},
-    //   {CategoryId:2, Name:'Jens'},
-    //   {CategoryId:3, Name:'Peter'}
-    // ];
-    // console.log(this.categoryList2);
-
-    // //version 3
-    // this.categoryList = this.service.getAll();
-    // console.log(this.categoryList)
 
     //Version 4
     this.service.getAll().subscribe(data => {
       this.categoryList = data;
       console.log(data)
+
+
     });
 
   } //End of ngOnInit
@@ -53,5 +40,20 @@ export class CategoryComponent {
     console.log(this.categoryList2);
   } //End getAll
 
-  getAll3(): void {this.service}
+  getAll3(): void {this.service
+  }
+
+  deleteById(entityId: number): void {
+    this.service.deleteById(entityId).subscribe(
+      () => {
+        console.log('Entity deleted successfully');
+        // Optionally, update the list after deletion
+        this.categoryList = this.categoryList.filter(category => category.categoryId !== entityId);
+      },
+      error => {
+        console.error('Error deleting entity:', error);
+      }
+  )};
+
+
 }

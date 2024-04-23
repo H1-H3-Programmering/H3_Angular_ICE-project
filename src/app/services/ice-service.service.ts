@@ -44,10 +44,17 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<ICEentity[]>(this.urlCategory);
   }
 
-  delete(name:string,entityToDelete:number):boolean{
-    this.http.delete(this.urlCategory);
-    this.http.delete('https://localhost:7266/api/'+ name +'/'+entityToDelete);
-    return true
+  // deleteById(name: string = 'Category', entityToDelete: number = 1): boolean {
+  //   this.http.delete(this.urlCategory);
+  //   this.http.delete(
+  //     'https://localhost:7266/api/' + name + '/' + entityToDelete
+  //   );
+  //   return true;
+  // }
+
+  deleteById(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Category/${entityId}`;
+    return this.http.delete(url);
   }
 
   getAllIngredients(): Observable<Ingredient[]> {
