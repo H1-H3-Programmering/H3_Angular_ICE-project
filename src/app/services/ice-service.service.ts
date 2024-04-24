@@ -44,10 +44,22 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<ICEentity[]>(this.urlCategory);
   }
 
-  delete(name:string,entityToDelete:number):boolean{
+  delete(name: string, entityToDelete: number): boolean {
     this.http.delete(this.urlCategory);
-    this.http.delete('https://localhost:7266/api/'+ name +'/'+entityToDelete);
-    return true
+    this.http.delete(
+      'https://localhost:7266/api/' + name + '/' + entityToDelete
+    );
+    return true;
+  }
+
+  createUser(user: Users): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlUsers, user);
+  }
+
+  createCountry(countries: Countries): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlCountry, countries);
   }
 
   getAllIngredients(): Observable<Ingredient[]> {

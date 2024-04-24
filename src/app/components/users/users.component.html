@@ -10,3 +10,10 @@
     </li>
   </ul>
 </div>
+
+<form [formGroup]="usersForm" action="" (ngSubmit)="create()">
+  <input type="text" name="username" id="username" placeholder="username" formControlName="username">
+  <input type="text" name="email" id="email" placeholder="email" formControlName="email">
+  <input type="password" name="password" id="password" placeholder="password" formControlName="password">
+  <button type="submit">Create</button>
+</form>
