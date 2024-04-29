@@ -13,7 +13,9 @@
 
 <div>
   <form [formGroup]="categoryForm" action="" (ngSubmit)="create()">
-    <input type="text" name="name" id="name" placeholder="name" formControlName="name">
-    <button type="submit">Create</button>
+    <input type="text" name="name" id="name" placeholder="Name" formControlName="name">
+    <div *ngIf="categoryForm.get('name')?.invalid && (categoryForm.get('name')?.dirty || categoryForm.get('name')?.touched)">
+  </div>
+    <button type="submit" [disabled]="categoryForm.invalid">Create</button>
   </form>
 </div>

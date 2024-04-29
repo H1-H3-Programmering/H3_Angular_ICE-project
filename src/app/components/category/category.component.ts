@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Category } from '../../models/Category';
 import { ICEServiceService } from '../../services/ice-service.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-category',
@@ -13,16 +13,22 @@ export class CategoryComponent {
   categoryForm: FormGroup;
   selectedEntityId: number | null = null; // Property to store the selected entity ID
 
+  constructor(private service: ICEServiceService<Category>) {
+    this.categoryForm = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    });
+  }
+
   ngOnInit(): void {
-    //Version 4
+    this.getAllCategory();
+    console.log(this.getAllCategory);
+  } //End of ngOnInit
+
+  getAllCategory(): void {
     this.service.getAllCategory().subscribe((data) => {
       this.categoryList = data;
       console.log(data);
     });
-  } //End of ngOnInit
-
-  getAllCategory(): void {
-    console.log(this.categoryList);
   } //End getAll
 
   confirmDelete(): void {
@@ -45,6 +51,7 @@ export class CategoryComponent {
     } else {
       console.warn('No entity selected for deletion.');
     }
+
   }
 
   create(): void {
@@ -55,13 +62,7 @@ export class CategoryComponent {
       .subscribe((response) => {
         console.log('Category created successfully:', response);
         // Optionally, you can refresh the user list after creation
-        this.service.getAllCategory();
+        this.getAllCategory();
       });
-  }
-
-  constructor(private service: ICEServiceService<Category>) {
-    this.categoryForm = new FormGroup({
-      name: new FormControl(''),
-    });
   }
 }
