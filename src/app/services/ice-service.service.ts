@@ -44,17 +44,14 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<ICEentity[]>(this.urlCategory);
   }
 
-  // deleteById(name: string = 'Category', entityToDelete: number = 1): boolean {
-  //   this.http.delete(this.urlCategory);
-  //   this.http.delete(
-  //     'https://localhost:7266/api/' + name + '/' + entityToDelete
-  //   );
-  //   return true;
-  // }
-
   deleteByCategoryId(entityId: number = 1): Observable<any> {
     const url = `${environment.apiUrl}Category/${entityId}`;
     return this.http.delete(url);
+  }
+
+  createCategory(category: Category): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlCategory, category);
   }
 
   getAllIngredients(): Observable<Ingredient[]> {
@@ -79,6 +76,11 @@ export class ICEServiceService<ICEentity> {
 
   getAllUsers(): Observable<Users[]> {
     return this.http.get<Users[]>(this.urlUsers);
+  }
+
+  createUser(user: Users): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlUsers, user);
   }
 
   getAllComments(): Observable<Comments[]> {

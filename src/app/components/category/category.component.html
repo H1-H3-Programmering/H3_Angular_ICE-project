@@ -1,10 +1,19 @@
 <p>category works!</p>
 
-<button (click)="getAll()">Get All</button>
+<div>
+  <button (click)="getAllCategory()">Get All</button>
+</div>
 
-<select [(ngModel)]="selectedEntityId">
-  <option *ngFor="let category of categoryList" [value]="category.categoryId">{{ category.name }}</option>
-</select>
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let category of categoryList" [value]="category.categoryId">{{ category.name }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
 
-<button (click)="confirmDelete()">Confirm Delete</button>
-
+<div>
+  <form [formGroup]="categoryForm" action="" (ngSubmit)="create()">
+    <input type="text" name="name" id="name" placeholder="name" formControlName="name">
+    <button type="submit">Create</button>
+  </form>
+</div>
