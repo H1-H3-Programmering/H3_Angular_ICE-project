@@ -37,6 +37,7 @@ export class CategoryComponent {
       this.service.deleteByCategoryId(this.selectedEntityId).subscribe(
         () => {
           console.log('Entity deleted successfully');
+          this.getAllCategory();
           // Optionally, update the categoryList after deletion
           this.categoryList = this.categoryList.filter(
             (category) => category.categoryId !== this.selectedEntityId
