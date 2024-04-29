@@ -78,6 +78,11 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<Users[]>(this.urlUsers);
   }
 
+  deleteByUsersId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Users/${entityId}`;
+    return this.http.delete(url);
+  }
+
   createUser(user: Users): Observable<any> {
     // Assuming your API endpoint for creating a user is POST /users
     return this.http.post<any>(this.urlUsers, user);

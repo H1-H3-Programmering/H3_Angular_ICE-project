@@ -1,6 +1,22 @@
 <p>users works!</p>
 
 <div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let users of usersList" [value]="users.userId">{{ users.username }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+<div>
+  <form [formGroup]="usersForm" action="" (ngSubmit)="create()">
+    <input type="text" name="username" id="username" placeholder="username" formControlName="username">
+    <input type="text" name="email" id="email" placeholder="email" formControlName="email">
+    <input type="password" name="password" id="password" placeholder="password" formControlName="password">
+    <div *ngIf="usersForm.get('password')?.invalid && (usersForm.get('password')?.dirty || usersForm.get('password')?.touched)"></div>
+    <button type="submit" [disabled]="usersForm.invalid">Create</button>
+  </form>
+</div>
+
+<div>
   <h2>Users</h2>
   <ul>
     <li *ngFor="let users of usersList">
@@ -10,10 +26,3 @@
     </li>
   </ul>
 </div>
-
-<form [formGroup]="usersForm" action="" (ngSubmit)="create()">
-  <input type="text" name="username" id="username" placeholder="username" formControlName="username">
-  <input type="text" name="email" id="email" placeholder="email" formControlName="email">
-  <input type="password" name="password" id="password" placeholder="password" formControlName="password">
-  <button type="submit">Create</button>
-</form>
