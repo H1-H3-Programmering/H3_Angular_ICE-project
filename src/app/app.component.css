@@ -1,0 +1,60 @@
+
+body {
+  margin: 0;
+}
+
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.admin-header {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+}
+
+.admin-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.admin-side-menu {
+  background-color: #ddd;
+  width: 250px;
+  /* Adjust width as needed */
+}
+
+.admin-side-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-side-menu ul li {
+  padding: 10px;
+}
+
+.admin-side-menu ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.admin-side-menu ul li a:hover {
+  background-color: #ccc;
+}
+
+.admin-content {
+  flex: 1;
+}
+
+.selected-category-box {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  margin-left: 20px;
+  margin-top: 20px;
+  /* Add some space between the side menu and the box */
+}
+

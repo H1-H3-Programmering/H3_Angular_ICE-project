@@ -1,5 +1,30 @@
 
-<app-category></app-category>
+<div class="admin-panel">
+  <header class="admin-header">
+    <h1>Admin Panel</h1>
+  </header>
 
+  <div class="admin-content">
+    <aside class="admin-side-menu">
+      <ul>
+        <li><a (click)="showCategory('category')">Category 1</a></li>
+        <li><a (click)="showCategory('comments')">Comments</a></li>
+        <li><a (click)="showCategory('users')">Users</a></li>
+      </ul>
+    </aside>
 
-<app-comments></app-comments>
+    <div class="selected-category-box">
+      <ng-container *ngIf="selectedCategory === 'category'">
+        <app-category></app-category>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'comments'">
+        <app-comments></app-comments>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'users'">
+        <app-users></app-users>
+      </ng-container>
+    </div>
+  </div>
+</div>
