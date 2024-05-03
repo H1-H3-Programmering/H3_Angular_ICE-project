@@ -228,7 +228,7 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<UserHistory[]>(this.urlUserHistory);
   }
 
-  deleteUserHistoryId(entityId: number = 1): Observable<any> {
+  deleteByUserHistoryId(entityId: number = 1): Observable<any> {
     const url = `${environment.apiUrl}UserHistory/${entityId}`;
     return this.http.delete(url);
   }
@@ -242,7 +242,7 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<UserPreferences[]>(this.urlUserPreference);
   }
 
-  deleteUserPreferenceId(entityId: number = 1): Observable<any> {
+  deleteByUserPreferenceId(entityId: number = 1): Observable<any> {
     const url = `${environment.apiUrl}UserPreference/${entityId}`;
     return this.http.delete(url);
   }

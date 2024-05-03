@@ -39,7 +39,7 @@ create(): void {
     console.log(this.commentsForm.value);
     // Call the service method to create a user
     this.service.createComment(this.commentsForm.value).subscribe((response) => {
-        console.log('Category created successfully:', response);
+        console.log('Comment created successfully:', response);
         // Optionally, you can refresh the user list after creation
         this.getAllComments();
       });

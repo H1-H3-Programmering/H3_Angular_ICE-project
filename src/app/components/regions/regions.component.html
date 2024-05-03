@@ -1,1 +1,24 @@
 <p>regions works!</p>
+
+<div>
+  <button (click)="getAllRegions()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let region of regionsList" [value]="region.regionId">{{ region.regionName }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="regionForm" (ngSubmit)="create()">
+    <input type="number" name="regionId" id="regionId" placeholder="regionId" formControlName="regionId" required>
+    <input type="text" name="regionName" id="regionName" placeholder="regionName" formControlName="regionName" required>
+    <input type="number" name="countryId" id="countryId" placeholder="countryId" formControlName="countryId" required>
+    <div *ngIf="regionForm.get('text')?.invalid && (regionForm.get('text')?.dirty || regionForm.get('text')?.touched)">
+      Comment is required and should be at least 4 characters long.
+    </div>
+    <button type="submit" [disabled]="regionForm.invalid">Create</button>
+  </form>
+</div>
