@@ -58,20 +58,70 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<Ingredient[]>(this.urlIngredient);
   }
 
+  deleteByIngredientId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Ingredient/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createIngredient(ingredient: Ingredient): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlIngredient, ingredient);
+  }
+
   getAllKitchens(): Observable<Kitchen[]> {
     return this.http.get<Kitchen[]>(this.urlKitchen);
+  }
+
+  deleteByKitchenId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Kitchen/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createKitchen(kitchen: Kitchen): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlKitchen, kitchen);
   }
 
   getAllRecipes(): Observable<Recipe[]> {
     return this.http.get<Recipe[]>(this.urlRecipe);
   }
 
+  deleteByRecipeId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Recipe/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createRecipe(recipe: Recipe): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlRecipe, recipe);
+  }
+
   getAllReviews(): Observable<Review[]> {
     return this.http.get<Review[]>(this.urlReview);
   }
 
+  deleteByReviewId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Review/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createReview(review: Review): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlReview, review);
+  }
+
   getAllUserFavorites(): Observable<UserFavorite[]> {
     return this.http.get<UserFavorite[]>(this.urlUserFavorite);
+  }
+
+  deleteByUserFavoriteId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}UserFavorite/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createUserFavorite(userFavorite: UserFavorite): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlUserFavorite, userFavorite);
   }
 
   getAllUsers(): Observable<Users[]> {
@@ -92,31 +142,113 @@ export class ICEServiceService<ICEentity> {
     return this.http.get<Comments[]>(this.urlComment);
   }
 
+  deleteByCommentId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Comment/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createComment(comment: Comments): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlComment, comment);
+  }
+
   getAllCountries(): Observable<Countries[]> {
     return this.http.get<Countries[]>(this.urlCountry);
+  }
+
+  deleteByCountryId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Country/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createCountry(country: Countries): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlCountry, country);
   }
 
   getAllDietaryPreferences(): Observable<DietaryPreferences[]> {
     return this.http.get<DietaryPreferences[]>(this.urlDietaryPreference);
   }
 
+  deleteByDietaryPreferenceId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}DietaryPreference/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createDietaryPreference(
+    dietaryPreference: DietaryPreferences
+  ): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlDietaryPreference, dietaryPreference);
+  }
+
   getAllLanguage(): Observable<Language[]> {
     return this.http.get<Language[]>(this.urlLanguage);
+  }
+
+  deleteByLanguageId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Language/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createLanguage(language: Language): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlLanguage, language);
   }
 
   getAllRecipesTag(): Observable<RecipesTag[]> {
     return this.http.get<RecipesTag[]>(this.urlRecipeTag);
   }
 
+  deleteByRecipeTagId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}RecipeTag/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createRecipeTag(recipeTag: RecipesTag): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlRecipeTag, recipeTag);
+  }
+
   getAllRegions(): Observable<Regions[]> {
     return this.http.get<Regions[]>(this.urlRegion);
+  }
+
+  deleteByRegionId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}Region/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createRegion(region: Regions): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlRegion, region);
   }
 
   getAllUserHistory(): Observable<UserHistory[]> {
     return this.http.get<UserHistory[]>(this.urlUserHistory);
   }
 
+  deleteUserHistoryId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}UserHistory/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createUserHistory(userHistory: UserHistory): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlUserHistory, userHistory);
+  }
+
   getAllUserPreferences(): Observable<UserPreferences[]> {
     return this.http.get<UserPreferences[]>(this.urlUserPreference);
+  }
+
+  deleteUserPreferenceId(entityId: number = 1): Observable<any> {
+    const url = `${environment.apiUrl}UserPreference/${entityId}`;
+    return this.http.delete(url);
+  }
+
+  createUserPreference(userPreference: UserPreferences): Observable<any> {
+    // Assuming your API endpoint for creating a user is POST /users
+    return this.http.post<any>(this.urlUserPreference, userPreference);
   }
 }

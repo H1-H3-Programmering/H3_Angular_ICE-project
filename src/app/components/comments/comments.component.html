@@ -1,15 +1,24 @@
 <p>comments works!</p>
 
-
 <div>
-  <h2>Comments</h2>
-  <ul>
-    <li *ngFor="let comment of commentsList">
-      <p>Comment ID: {{ comment.commentId }}</p>
-      <p>User ID: {{ comment.userId }}</p>
-      <p>Recipe ID: {{ comment.recipeId }}</p>
-      <p>Text: {{ comment.text }}</p>
-    </li>
-  </ul>
+  <button (click)="getAllComments()">Get All</button>
 </div>
 
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let comment of commentsList" [value]="comment.commentId">{{ comment.text }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="commentsForm" (ngSubmit)="create()">
+    <input type="number" name="userId" id="userId" placeholder="User ID" formControlName="userId" required>
+    <input type="number" name="recipeId" id="recipeId" placeholder="Recipe ID" formControlName="recipeId" required>
+    <input type="text" name="text" id="text" placeholder="Comment" formControlName="text" required>
+    <div *ngIf="commentsForm.get('text')?.invalid && (commentsForm.get('text')?.dirty || commentsForm.get('text')?.touched)">
+      Comment is required and should be at least 4 characters long.
+    </div>
+    <button type="submit" [disabled]="commentsForm.invalid">Create</button>
+  </form>
+</div>
