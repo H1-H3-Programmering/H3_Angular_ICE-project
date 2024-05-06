@@ -88,6 +88,11 @@ export class ICEServiceService<ICEentity> {
     return this.http.post<any>(this.urlUsers, user);
   }
 
+  updateUser(user: Users): Observable<any> {
+    const url = `${this.urlUsers}/${user.userId}`; // Assuming userId is the identifier for updating users
+    return this.http.put(url, user);
+  }
+
   getAllComments(): Observable<Comments[]> {
     return this.http.get<Comments[]>(this.urlComment);
   }

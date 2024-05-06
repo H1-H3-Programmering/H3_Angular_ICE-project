@@ -1,9 +1,6 @@
-// users.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { Users } from '../../models/Users';
 import { ICEServiceService } from '../../services/ice-service.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
@@ -12,21 +9,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class UsersComponent implements OnInit {
   usersList: Users[] = [];
-  usersForm: FormGroup;
-  selectedEntityId: number | null = null;
-  filteredUsers: Users[] = []; // Array to store filtered users
+  filteredUsers: Users[] = [];
+  selectedUserIds: number[] = [];
+  searchText: string = '';
 
-
-  constructor(private service: ICEServiceService<Users>) {
-    this.usersForm = new FormGroup({
-      username: new FormControl(''),
-      email: new FormControl(''),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(4),
-      ]),
-    });
-  }
+  constructor(private service: ICEServiceService<Users>) {}
 
   ngOnInit(): void {
     this.getAllUsers();
@@ -35,52 +22,43 @@ export class UsersComponent implements OnInit {
   getAllUsers(): void {
     this.service.getAllUsers().subscribe((data) => {
       this.usersList = data;
-      this.filteredUsers = [...this.usersList]; // Initialize filteredUsers with all users
+      this.filteredUsers = [...this.usersList];
     });
   }
 
-  create(): void {
-    this.service.createUser(this.usersForm.value).subscribe((response) => {
-      this.getAllUsers();
-    });
-  }
-
-  deleteUser(userId: number): void {
-    this.service.deleteByUsersId(userId).subscribe(
-      () => {
-        this.getAllUsers();
-        this.usersList = this.usersList.filter(
-          (user) => user.userId !== userId
-        );
-        this.selectedEntityId = null;
-      },
-      (error) => {
-        console.error('Error deleting entity:', error);
-      }
+  searchUsers(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchText = target.value.trim().toLowerCase();
+    this.filteredUsers = this.usersList.filter(
+      (user) =>
+        user.username && user.username.toLowerCase().includes(this.searchText)
     );
   }
 
-  edit(user: Users): void {
-    // Implement edit functionality here
+  toggleSelection(userId: number | undefined): void {
+    if (userId !== undefined) {
+      const index = this.selectedUserIds.indexOf(userId);
+      if (index === -1) {
+        this.selectedUserIds.push(userId);
+      } else {
+        this.selectedUserIds.splice(index, 1);
+      }
+    }
   }
 
-  // Method to filter users based on search query
-  searchUsers(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const query = target ? target.value?.trim() : '';
-
-    if (query === '') {
-      // If the query is empty, show all users
-      this.filteredUsers = [...this.usersList];
-    } else {
-      // Otherwise, filter users based on the query
-      this.filteredUsers = this.usersList.filter((user) => {
-        // Perform null check before accessing the username property
-        if (user.username) {
-          return user.username.toLowerCase().includes(query.toLowerCase());
-        }
-        return false; // Return false if username is undefined
+  deleteSelectedUsers(): void {
+    if (confirm('Are you sure you want to delete selected users?')) {
+      this.selectedUserIds.forEach((userId) => {
+        this.service.deleteByUsersId(userId).subscribe(() => {
+          this.usersList = this.usersList.filter(
+            (user) => user.userId !== userId
+          );
+          this.filteredUsers = this.filteredUsers.filter(
+            (user) => user.userId !== userId
+          );
+        });
       });
+      this.selectedUserIds = [];
     }
   }
 }

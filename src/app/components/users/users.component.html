@@ -1,37 +1,28 @@
-<!-- users.component.html -->
 <p>users works!</p>
 
-<!-- User Creation Form -->
-<div>
-  <form [formGroup]="usersForm" (ngSubmit)="create()">
-    <input type="text" name="username" placeholder="Username" formControlName="username">
-    <input type="text" name="email" placeholder="Email" formControlName="email">
-    <input type="password" name="password" placeholder="Password" formControlName="password">
-    <button class="create-button" type="submit" [disabled]="usersForm.invalid">Create</button>
-  </form>
+<!-- User Deletion Section -->
+<h2>Users</h2>
+<div class="deletion-section">
+  <button class="delete-button" (click)="deleteSelectedUsers()">Delete Selected</button>
 </div>
 
-<!-- User Search -->
+<!-- Search bar on the right side -->
 <div class="search-container">
-  <input type="text" placeholder="Search username..." (input)="searchUsers($event)">
   <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
     <path fill="currentColor" d="M21.7 20.3l-4.2-4.2C18.1 14.2 19 12.2 19 10c0-4.4-3.6-8-8-8S3 5.6 3 10s3.6 8 8 8c2.2 0 4.2-.9 5.7-2.3l4.2 4.2c.2.2.5.3.7.3s.5-.1.7-.3c.4-.4.4-1 0-1.4zM5 10c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z"/>
   </svg>
+  <input type="text" placeholder="Search username..." (input)="searchUsers($event)">
 </div>
-
-
-
 
 <!-- User List Table -->
 <div>
-  <h2>Users</h2>
   <table>
     <thead>
       <tr>
         <th>User ID</th>
         <th>Username</th>
         <th>Email</th>
-        <th>Actions</th>
+        <th>Select</th>
       </tr>
     </thead>
     <tbody>
@@ -40,8 +31,7 @@
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>
-          <button class="edit-button" (click)="edit(user)">Edit</button>
-          <button class="delete-button" *ngIf="user.userId !== undefined" (click)="deleteUser(user.userId)">Delete</button>
+          <input placeholder="Selected" type="checkbox" [value]="user.userId" (change)="toggleSelection(user.userId)">
         </td>
       </tr>
     </tbody>
