@@ -1,1 +1,24 @@
 <p>countries works!</p>
+
+<div>
+  <button (click)="getAllCountries()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let countries of countriesList" [value]="countries.countryId">{{ countries.countryName }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="countryForm" (ngSubmit)="create()">
+    <input type="number" name="countryId" id="countryId" placeholder="Country ID" formControlName="countryId" required>
+    <input type="text" name="countryName" id="countryName" placeholder="Country name" formControlName="countryName" required>
+    <input type="text" name="continent" id="continent" placeholder="Continent" formControlName="continent" required>
+    <div *ngIf="countryForm.get('text')?.invalid && (countryForm.get('text')?.dirty || countryForm.get('text')?.touched)">
+      Comment is required and should be at least 4 characters long.
+    </div>
+    <button type="submit" [disabled]="countryForm.invalid">Create</button>
+  </form>
+</div>

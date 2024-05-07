@@ -1,1 +1,21 @@
-<p>ingredient works!</p>
+<p>category works!</p>
+
+<div>
+  <button (click)="getAllIngredients()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let ingredient of ingredientList" [value]="ingredient.ingredientsId">{{ ingredient.name }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="ingredientForm" action="" (ngSubmit)="create()">
+    <input type="text" name="name" id="name" placeholder="Name" formControlName="name">
+    <div *ngIf="ingredientForm.get('name')?.invalid && (ingredientForm.get('name')?.dirty || ingredientForm.get('name')?.touched)">
+  </div>
+    <button type="submit" [disabled]="ingredientForm.invalid">Create</button>
+  </form>
+</div>

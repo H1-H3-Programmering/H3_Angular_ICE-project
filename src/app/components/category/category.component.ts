@@ -15,7 +15,7 @@ export class CategoryComponent {
 
   constructor(private service: ICEServiceService<Category>) {
     this.categoryForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      name: new FormControl('', [Validators.required, Validators.minLength(0)]),
     });
   }
 

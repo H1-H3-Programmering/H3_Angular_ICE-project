@@ -1,7 +1,90 @@
 
-<app-category></app-category>
+<div class="admin-panel">
+  <header class="admin-header">
+    <h1>Admin Panel</h1>
+  </header>
 
+  <div class="admin-content">
+    <aside class="admin-side-menu">
+      <ul>
+        <li><a (click)="showCategory('category')">Category</a></li>
+        <li><a (click)="showCategory('comments')">Comments</a></li>
+        <li><a (click)="showCategory('countries')">Countries</a></li>
+        <li><a (click)="showCategory('dietary-preferences')">Dietary Preferences</a></li>
+        <li><a (click)="showCategory('ingredient')">Ingredient</a></li>
+        <li><a (click)="showCategory('kitchen')">Kitchen</a></li>
+        <li><a (click)="showCategory('language')">Language</a></li>
+        <li><a (click)="showCategory('recipe')">Recipe</a></li>
+        <li><a (click)="showCategory('recipes-tag')">Recipe Tags</a></li>
+        <li><a (click)="showCategory('regions')">Regions</a></li>
+        <li><a (click)="showCategory('review')">Review</a></li>
+        <li><a (click)="showCategory('user-favorite')">User Favorites</a></li>
+        <li><a (click)="showCategory('user-history')">User History</a></li>
+        <li><a (click)="showCategory('user-preferences')">User Preferences</a></li>
+        <li><a (click)="showCategory('users')">Users</a></li>
+      </ul>
+    </aside>
 
-<app-comments></app-comments>
+    <div class="selected-category-box">
+      <ng-container *ngIf="selectedCategory === 'category'">
+        <app-category></app-category>
+      </ng-container>
 
-<app-regions></app-regions>
+      <ng-container *ngIf="selectedCategory === 'comments'">
+        <app-comments></app-comments>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'countries'">
+        <app-countries></app-countries>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'dietary-preferences'">
+        <app-dietary-preferences></app-dietary-preferences>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'ingredient'">
+        <app-ingredient></app-ingredient>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'kitchen'">
+        <app-kitchen></app-kitchen>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'language'">
+        <app-language></app-language>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'recipe'">
+        <app-recipe></app-recipe>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'recipes-tag'">
+        <app-recipes-tag></app-recipes-tag>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'regions'">
+        <app-regions></app-regions>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'review'">
+        <app-review></app-review>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'user-favorite'">
+        <app-user-favorite></app-user-favorite>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'user-history'">
+        <app-user-history></app-user-history>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'user-preferences'">
+        <app-user-preferences></app-user-preferences>
+      </ng-container>
+
+      <ng-container *ngIf="selectedCategory === 'users'">
+        <app-users></app-users>
+      </ng-container>
+    </div>
+  </div>
+</div>

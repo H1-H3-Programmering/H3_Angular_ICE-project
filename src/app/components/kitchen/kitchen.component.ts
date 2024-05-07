@@ -17,16 +17,7 @@ export class KitchenComponent {
   constructor(private service: ICEServiceService<Kitchen>) {
     this.kitchenForm = new FormGroup({
       name: new FormControl('', [Validators.required, Validators.minLength(4)]),
-      continent: new FormControl('', [
-        Validators.required,
-        Validators.minLength(4),
-      ]),
-      region: new FormControl('', [
-        Validators.required,
-        Validators.minLength(4),
-      ]),
       countryId: new FormControl(null, [Validators.required]),
-      recipeId: new FormControl(null, [Validators.required]),
     });
   }
 

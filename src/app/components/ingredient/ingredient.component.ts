@@ -16,9 +16,7 @@ export class IngredientComponent {
 
   constructor(private service: ICEServiceService<Ingredient>) {
     this.ingredientForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.minLength(4)]),
-      categoryId: new FormControl(null, [Validators.required]),
-      recipeId: new FormControl(null, [Validators.required]),
+      name: new FormControl('', [Validators.required, Validators.minLength(0)])
     });
   }
 

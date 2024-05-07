@@ -1,2 +1,22 @@
 <p>kitchen works!</p>
 
+<div>
+  <button (click)="getAllKitchens()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let kitchen of kitchenList" [value]="kitchen.kitchenId">{{ kitchen.name }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="kitchenForm" action="" (ngSubmit)="create()">
+    <input type="text" name="name" id="name" placeholder="Name" formControlName="name">
+    <input type="number" name="countryId" id="countryId" placeholder="Country Id" formControlName="countryId">
+    <div *ngIf="kitchenForm.get('name')?.invalid && (kitchenForm.get('name')?.dirty || kitchenForm.get('name')?.touched)">
+  </div>
+    <button type="submit" [disabled]="kitchenForm.invalid">Create</button>
+  </form>
+</div>
