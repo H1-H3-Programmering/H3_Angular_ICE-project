@@ -20,7 +20,6 @@ export class LanguageComponent {
         Validators.required,
         Validators.minLength(4),
       ]),
-      countryId: new FormControl(null, [Validators.required]),
     });
   }
 

@@ -1,28 +1,25 @@
 <p>users works!</p>
 
 <div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let users of usersList" [value]="users.userId">{{ users.username }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-<div>
-  <form [formGroup]="usersForm" action="" (ngSubmit)="create()">
-    <input type="text" name="username" id="username" placeholder="username" formControlName="username">
-    <input type="text" name="email" id="email" placeholder="email" formControlName="email">
-    <input type="password" name="password" id="password" placeholder="password" formControlName="password">
-    <div *ngIf="usersForm.get('password')?.invalid && (usersForm.get('password')?.dirty || usersForm.get('password')?.touched)"></div>
-    <button type="submit" [disabled]="usersForm.invalid">Create</button>
-  </form>
+  <button (click)="getAllUsers()">Get All</button>
 </div>
 
 <div>
-  <h2>Users</h2>
-  <ul>
-    <li *ngFor="let users of usersList">
-      <p>User ID: {{ users.userId }}</p>
-      <p>Username: {{ users.username }}</p>
-      <p>Email: {{ users.email }}</p>
-    </li>
-  </ul>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let user of usersList" [ngValue]="user.userId">{{ user.username }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="usersForm" (ngSubmit)="create()">
+    <input type="text" id="username" placeholder="Username" formControlName="username">
+    <input type="email" id="email" placeholder="Email" formControlName="email">
+    <input type="password" id="password" placeholder="Password" formControlName="password">
+    <div *ngIf="usersForm.get('password')?.invalid && (usersForm.get('password')?.dirty || usersForm.get('password')?.touched)">
+      <span *ngIf="usersForm.get('password')?.errors?.['required']">Password is required.</span>
+      <span *ngIf="usersForm.get('password')?.errors?.['minlength']">Password must be at least 4 characters long.</span>
+    </div>
+    <button type="submit" [disabled]="usersForm.invalid">Create</button>
+  </form>
 </div>

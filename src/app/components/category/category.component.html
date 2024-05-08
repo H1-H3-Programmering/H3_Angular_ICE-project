@@ -1,21 +1,47 @@
-<p>category works!</p>
+<div class="crud-panel">
+  <h2>Category Management</h2>
 
-<div>
-  <button (click)="getAllCategory()">Get All</button>
-</div>
 
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let category of categoryList" [value]="category.categoryId">{{ category.name }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="categoryForm" action="" (ngSubmit)="create()">
-    <input type="text" name="name" id="name" placeholder="Name" formControlName="name">
-    <div *ngIf="categoryForm.get('name')?.invalid && (categoryForm.get('name')?.dirty || categoryForm.get('name')?.touched)">
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create Comment</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchCategories()">
   </div>
-    <button type="submit" [disabled]="categoryForm.invalid">Create</button>
+
+  <!-- Table to display categories -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let category of filteredCategories">
+        <td>{{ category.categoryId }}</td>
+        <td>{{ category.name }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editCategory(category)">Edit</button>
+            <button class="delete-button" (click)="deleteCategory(category.categoryId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+    <input type="text" placeholder="Name" formControlName="name">
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="categoryForm.invalid">{{ editingCategory ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

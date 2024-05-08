@@ -1,24 +1,55 @@
-<p>countries works!</p>
+<div class="crud-panel">
+  <h2>Countries Management</h2>
 
-<div>
-  <button (click)="getAllCountries()">Get All</button>
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create Country</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchCountries()">
+  </div>
+
+  <!-- Table to display countries -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Country Name</th>
+        <th>Continent</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let country of filteredCountries">
+        <td>{{ country.countryId }}</td>
+        <td>{{ country.countryName }}</td>
+        <td>{{ country.continent }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editCountry(country)">Edit</button>
+            <button class="delete-button" (click)="deleteCountry(country.countryId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let countries of countriesList" [value]="countries.countryId">{{ countries.countryName }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="countryForm" (ngSubmit)="create()">
-    <input type="number" name="countryId" id="countryId" placeholder="Country ID" formControlName="countryId" required>
-    <input type="text" name="countryName" id="countryName" placeholder="Country name" formControlName="countryName" required>
-    <input type="text" name="continent" id="continent" placeholder="Continent" formControlName="continent" required>
-    <div *ngIf="countryForm.get('text')?.invalid && (countryForm.get('text')?.dirty || countryForm.get('text')?.touched)">
-      Comment is required and should be at least 4 characters long.
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="countryForm" (ngSubmit)="saveCountry()">
+    <input type="text" placeholder="Country Name" formControlName="countryName">
+    <input type="text" placeholder="Continent" formControlName="continent">
+    <div *ngIf="countryForm.get('countryName')?.invalid && (countryForm.get('countryName')?.dirty || countryForm.get('countryName')?.touched)">
+      <span *ngIf="countryForm.get('countryName')?.errors?.['required']">Country Name is required.</span>
     </div>
-    <button type="submit" [disabled]="countryForm.invalid">Create</button>
+    <div *ngIf="countryForm.get('continent')?.invalid && (countryForm.get('continent')?.dirty || countryForm.get('continent')?.touched)">
+      <span *ngIf="countryForm.get('continent')?.errors?.['required']">Continent is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="countryForm.invalid">{{ editingCountry ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

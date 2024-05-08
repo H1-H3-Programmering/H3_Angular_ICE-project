@@ -1,1 +1,29 @@
 <p>user-preferences works!</p>
+
+<div>
+  <button (click)="getAllUserPreferences()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let preference of userPreferencesList" [ngValue]="preference.preferenceId">{{ preference.preferenceId }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="userPreferenceForm" (ngSubmit)="create()">
+    <input type="number" id="preferenceId" placeholder="Preference ID" formControlName="preferenceId">
+    <input type="text" id="preferenceType" placeholder="Preference Type" formControlName="preferenceType">
+    <input type="text" id="preferenceDisription" placeholder="Preference Description" formControlName="preferenceDisription">
+    <div *ngIf="userPreferenceForm.get('preferenceType')?.invalid && (userPreferenceForm.get('preferenceType')?.dirty || userPreferenceForm.get('preferenceType')?.touched)">
+      <span *ngIf="userPreferenceForm.get('preferenceType')?.errors?.['required']">Preference Type is required.</span>
+      <span *ngIf="userPreferenceForm.get('preferenceType')?.errors?.['minlength']">Preference Type must be at least 4 characters long.</span>
+    </div>
+    <div *ngIf="userPreferenceForm.get('preferenceDisription')?.invalid && (userPreferenceForm.get('preferenceDisription')?.dirty || userPreferenceForm.get('preferenceDisription')?.touched)">
+      <span *ngIf="userPreferenceForm.get('preferenceDisription')?.errors?.['required']">Preference Description is required.</span>
+      <span *ngIf="userPreferenceForm.get('preferenceDisription')?.errors?.['minlength']">Preference Description must be at least 4 characters long.</span>
+    </div>
+    <button type="submit" [disabled]="userPreferenceForm.invalid">Create</button>
+  </form>
+</div>

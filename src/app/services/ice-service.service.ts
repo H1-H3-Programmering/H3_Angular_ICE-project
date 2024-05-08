@@ -40,18 +40,32 @@ export class ICEServiceService<ICEentity> {
 
   constructor(private http: HttpClient) {}
 
-  getAllCategory(): Observable<ICEentity[]> {
-    return this.http.get<ICEentity[]>(this.urlCategory);
+  getAllCategory(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.urlCategory);
   }
 
-  deleteByCategoryId(entityId: number = 1): Observable<any> {
-    const url = `${environment.apiUrl}Category/${entityId}`;
+  deleteByCategoryId(categoryId: number): Observable<any> {
+    const url = `${this.urlCategory}/${categoryId}`;
     return this.http.delete(url);
   }
 
   createCategory(category: Category): Observable<any> {
-    // Assuming your API endpoint for creating a user is POST /users
     return this.http.post<any>(this.urlCategory, category);
+  }
+
+  updateCategory(category: Category): Observable<any> {
+    const url = `${this.urlCategory}/${category.categoryId}`;
+    return this.http.put(url, category);
+  }
+
+  updateComment(comment: Comments): Observable<any> {
+    const url = `${this.urlComment}/${comment.commentId}`;
+    return this.http.put(url, comment);
+  }
+
+  updateCountry(countrie: Countries): Observable<any> {
+    const url = `${this.urlCountry}/${countrie.countryId}`;
+    return this.http.put(url, countrie);
   }
 
   getAllIngredients(): Observable<Ingredient[]> {

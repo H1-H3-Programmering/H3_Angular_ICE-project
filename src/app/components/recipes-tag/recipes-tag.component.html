@@ -1,1 +1,23 @@
 <p>recipes-tag works!</p>
+
+<div>
+  <button (click)="getAllRecipeTags()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let recipeTag of recipesTagList" [ngValue]="recipeTag.recipeTagId">{{ recipeTag.recipeTagId }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="recipeTagForm" (ngSubmit)="create()">
+    <input type="text" id="tag" placeholder="Tag" formControlName="tag">
+    <div *ngIf="recipeTagForm.get('tag')?.invalid && (recipeTagForm.get('tag')?.dirty || recipeTagForm.get('tag')?.touched)">
+      <span *ngIf="recipeTagForm.get('tag')?.errors?.['required']">Tag is required.</span>
+      <span *ngIf="recipeTagForm.get('tag')?.errors?.['minlength']">Tag must be at least 1 character long.</span>
+    </div>
+    <button type="submit" [disabled]="recipeTagForm.invalid">Create</button>
+  </form>
+</div>

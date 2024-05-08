@@ -1,1 +1,23 @@
 <p>language works!</p>
+
+<div>
+  <button (click)="getAllLanguages()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let language of languageList" [ngValue]="language.languageId">{{ language.languageName }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="languageForm" (ngSubmit)="create()">
+    <input type="text" id="languageName" placeholder="Language Name" formControlName="languageName">
+    <div *ngIf="languageForm.get('languageName')?.invalid && (languageForm.get('languageName')?.dirty || languageForm.get('languageName')?.touched)">
+      <span *ngIf="languageForm.get('languageName')?.errors?.['required']">Language Name is required.</span>
+      <span *ngIf="languageForm.get('languageName')?.errors?.['minlength']">Language Name must be at least 4 characters long.</span>
+    </div>
+    <button type="submit" [disabled]="languageForm.invalid">Create</button>
+  </form>
+</div>

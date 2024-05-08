@@ -1,19 +1,21 @@
 import { Component } from '@angular/core';
-import { Comments } from '../../models/Comments';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ICEServiceService } from '../../services/ice-service.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { text } from 'stream/consumers';
+import { Comments } from '../../models/Comments';
+import { Category } from '../../models/Category'; // Import Category type
 
 @Component({
   selector: 'app-comments',
   templateUrl: './comments.component.html',
-  styleUrl: './comments.component.css',
+  styleUrls: ['./comments.component.css'],
 })
 export class CommentsComponent {
   commentsList: Comments[] = [];
+  filteredComments: Comments[] = [];
   commentsForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingComment: Comments | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<Comments>) {
     this.commentsForm = new FormGroup({
@@ -25,48 +27,91 @@ export class CommentsComponent {
 
   ngOnInit(): void {
     this.getAllComments();
-    console.log(this.getAllComments);
   }
 
   getAllComments(): void {
     this.service.getAllComments().subscribe((data) => {
       this.commentsList = data;
-      console.log(data);
+      this.filteredComments = [...this.commentsList]; // Initialize filteredComments with all comments
+      // Remove the searchComments() call from here
     });
   }
 
-create(): void {
-    console.log(this.commentsForm.value);
-    // Call the service method to create a user
-    this.service.createComment(this.commentsForm.value).subscribe((response) => {
-        console.log('Comment created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllComments();
-      });
-}
-
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByCommentId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllComments();
-          // Optionally, update the categoryList after deletion
-          this.commentsList = this.commentsList.filter(
-            (comments) => comments.commentId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+  create(): void {
+    if (this.commentsForm.valid) {
+      this.service
+        .createComment(this.commentsForm.value)
+        .subscribe((response) => {
+          this.getAllComments(); // Refresh comment list
+          this.commentsForm.reset(); // Clear form
+        });
     }
   }
 
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
+  }
 
+  deleteComment(commentId: number | undefined): void {
+    if (commentId !== undefined) {
+      this.service.deleteByCommentId(commentId).subscribe(() => {
+        this.getAllComments(); // Refresh comment list
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid comment ID');
+    }
+  }
+
+  editComment(comment: Comments): void {
+    this.editingComment = comment;
+    this.commentsForm.patchValue({
+      userId: comment.userId,
+      recipeId: comment.recipeId,
+      text: comment.text,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveComment(): void {
+    if (this.commentsForm.valid) {
+      const userId = this.commentsForm.value.userId;
+      const recipeId = this.commentsForm.value.recipeId;
+      const text = this.commentsForm.value.text;
+
+      if (this.editingComment) {
+        const updatedComment: Comments = {
+          ...this.editingComment,
+          userId: userId,
+          recipeId: recipeId,
+          text: text,
+        };
+
+        // Call the service's updateComment method
+        this.service.updateComment(updatedComment).subscribe(() => {
+          this.getAllComments(); // Refresh comment list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new comment
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingComment = null;
+    this.commentsForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchComments(): void {
+    this.filteredComments = this.commentsList.filter(
+      (comment) =>
+        comment.text &&
+        comment.text.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
 }

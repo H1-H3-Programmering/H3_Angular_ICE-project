@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { Countries } from '../../models/Countries';
 import { ICEServiceService } from '../../services/ice-service.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-countries',
   templateUrl: './countries.component.html',
-  styleUrl: './countries.component.css',
+  styleUrls: ['./countries.component.css'],
 })
 export class CountriesComponent {
   countriesList: Countries[] = [];
+  filteredCountries: Countries[] = [];
   countryForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingCountry: Countries | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<Countries>) {
     this.countryForm = new FormGroup({
@@ -23,46 +25,89 @@ export class CountriesComponent {
 
   ngOnInit(): void {
     this.getAllCountries();
-    console.log(this.getAllCountries());
-  } // End of ngOnInit
+  }
 
   getAllCountries(): void {
     this.service.getAllCountries().subscribe((data) => {
       this.countriesList = data;
-      console.log(data);
+      this.filteredCountries = [...this.countriesList]; // Initialize filteredCountries with all countries
     });
+  }
+
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
   create(): void {
-    console.log(this.countryForm.value);
-    // Call the service method to create a user
-    this.service.createCountry(this.countryForm.value).subscribe((response) => {
-      console.log('Country created successfully:', response);
-      // Optionally, you can refresh the user list after creation
-      this.getAllCountries();
-    });
+    if (this.countryForm.valid) {
+      this.service
+        .createCountry(this.countryForm.value)
+        .subscribe((response) => {
+          this.getAllCountries(); // Refresh country list
+          this.countryForm.reset(); // Clear form
+        });
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByCommentId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllCountries();
-          // Optionally, update the categoryList after deletion
-          this.countriesList = this.countriesList.filter(
-            (countries) => countries.countryId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
+  deleteCountry(countryId: number | undefined): void {
+    if (countryId !== undefined) {
+      this.service.deleteByCountryId(countryId).subscribe(() => {
+        this.getAllCountries(); // Refresh country list
+        this.cancelEdit();
+      });
     } else {
-      console.warn('No entity selected for deletion.');
+      console.error('Invalid country ID');
     }
+  }
+
+  editCountry(country: Countries): void {
+    this.editingCountry = country;
+    this.countryForm.patchValue({
+      countryName: country.countryName,
+      continent: country.continent,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveCountry(): void {
+    if (this.countryForm.valid) {
+      const countryName = this.countryForm.value.countryName;
+      const continent = this.countryForm.value.continent;
+
+      if (this.editingCountry) {
+        const updatedCountry: Countries = {
+          ...this.editingCountry,
+          countryName: countryName,
+          continent: continent,
+        };
+
+        // Call the service's updateCountry method
+        this.service.updateCountry(updatedCountry).subscribe(() => {
+          this.getAllCountries(); // Refresh country list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new country
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingCountry = null;
+    this.countryForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchCountries(): void {
+    this.filteredCountries = this.countriesList.filter(
+      (country) =>
+        country.countryName &&
+        country.countryName
+          .toLowerCase()
+          .includes(this.searchText.toLowerCase())
+    );
   }
 }

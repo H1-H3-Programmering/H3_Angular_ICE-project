@@ -1,69 +1,104 @@
 import { Component } from '@angular/core';
-import { Category } from '../../models/Category';
-import { ICEServiceService } from '../../services/ice-service.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ICEServiceService } from '../../services/ice-service.service';
+import { Category } from '../../models/Category';
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
-  styleUrl: './category.component.css',
+  styleUrls: ['./category.component.css'],
 })
 export class CategoryComponent {
   categoryList: Category[] = [];
+  filteredCategories: Category[] = [];
   categoryForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
+  searchText: string = '';
+  editingCategory: Category | null = null;
+  isFormVisible: boolean = false;
 
   constructor(private service: ICEServiceService<Category>) {
     this.categoryForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.minLength(0)]),
+      name: new FormControl('', [Validators.required, Validators.minLength(1)]),
     });
   }
 
   ngOnInit(): void {
     this.getAllCategory();
-    console.log(this.getAllCategory);
-  } //End of ngOnInit
+  }
 
   getAllCategory(): void {
     this.service.getAllCategory().subscribe((data) => {
       this.categoryList = data;
-      console.log(data);
+      this.filteredCategories = data;
     });
-  } //End getAll
+  }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByCategoryId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllCategory();
-          // Optionally, update the categoryList after deletion
-          this.categoryList = this.categoryList.filter(
-            (category) => category.categoryId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
     }
-
   }
 
   create(): void {
-    console.log(this.categoryForm.value);
-    // Call the service method to create a user
-    this.service
-      .createCategory(this.categoryForm.value)
-      .subscribe((response) => {
-        console.log('Category created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllCategory();
+    if (this.categoryForm.valid) {
+      const categoryName = this.categoryForm.value.name;
+      const newCategory: Category = { name: categoryName };
+      this.service.createCategory(newCategory).subscribe((response) => {
+        this.getAllCategory(); // Refresh category list
+        this.categoryForm.reset(); // Clear form
       });
+    }
+  }
+
+  deleteCategory(categoryId: number | undefined): void {
+    if (categoryId !== undefined) {
+      this.service.deleteByCategoryId(categoryId).subscribe(() => {
+        this.getAllCategory(); // Refresh category list
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid category ID');
+    }
+  }
+
+  editCategory(category: Category): void {
+    this.editingCategory = category;
+    this.categoryForm.patchValue({
+      name: category.name,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveCategory(): void {
+    if (this.categoryForm.valid) {
+      const categoryName = this.categoryForm.value.name;
+      if (this.editingCategory) {
+        const updatedCategory: Category = {
+          ...this.editingCategory,
+          name: categoryName,
+        };
+        this.service.updateCategory(updatedCategory).subscribe(() => {
+          this.getAllCategory(); // Refresh category list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new category
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingCategory = null;
+    this.categoryForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchCategories(): void {
+    this.filteredCategories = this.categoryList.filter(
+      (category) =>
+        category.name &&
+        category.name.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 }

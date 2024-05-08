@@ -1,1 +1,22 @@
-<p>user-favorite works!</p>
+<p>User Favorite works!</p>
+
+<div>
+  <button (click)="getAllUserFavorites()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let userFavorite of userFavoriteList" [ngValue]="userFavorite.userFavoriteId">{{ userFavorite.userFavoriteId }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="userFavoriteForm" (ngSubmit)="create()">
+    <input type="number" id="userId" placeholder="User ID" formControlName="userId">
+    <div *ngIf="userFavoriteForm.get('userId')?.invalid && (userFavoriteForm.get('userId')?.dirty || userFavoriteForm.get('userId')?.touched)">
+      <span *ngIf="userFavoriteForm.get('userId')?.errors?.['required']">User ID is required.</span>
+    </div>
+    <button type="submit" [disabled]="userFavoriteForm.invalid">Create</button>
+  </form>
+</div>

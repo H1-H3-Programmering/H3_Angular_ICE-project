@@ -1,1 +1,31 @@
 <p>recipe works!</p>
+
+<div>
+  <button (click)="getAllRecipes()">Get All</button>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedEntityId">
+    <option *ngFor="let recipe of recipeList" [ngValue]="recipe.recipeId">{{ recipe.recipeId }}</option>
+  </select>
+  <button (click)="confirmDelete()">Confirm Delete</button>
+</div>
+
+<div>
+  <form [formGroup]="recipeForm" (ngSubmit)="create()">
+    <input type="text" id="name" placeholder="Name" formControlName="name">
+    <input type="text" id="description" placeholder="Description" formControlName="description">
+    <input type="text" id="origin" placeholder="Origin" formControlName="origin">
+    <textarea id="instructions" placeholder="Instructions" formControlName="instructions"></textarea>
+    <input type="number" id="difficulty" placeholder="Difficulty" formControlName="difficulty">
+    <div *ngIf="recipeForm.get('difficulty')?.invalid && (recipeForm.get('difficulty')?.dirty || recipeForm.get('difficulty')?.touched)">
+      <span *ngIf="recipeForm.get('difficulty')?.errors?.['required']">Difficulty is required.</span>
+      <span *ngIf="recipeForm.get('difficulty')?.errors?.['maxlength']">Difficulty must be maximum 5 characters long.</span>
+    </div>
+    <input type="number" id="preparationTime" placeholder="Preparation Time" formControlName="preperationTime">
+    <div *ngIf="recipeForm.get('preperationTime')?.invalid && (recipeForm.get('preperationTime')?.dirty || recipeForm.get('preperationTime')?.touched)">
+      <span *ngIf="recipeForm.get('preperationTime')?.errors?.['required']">Preparation Time is required.</span>
+    </div>
+    <button type="submit" [disabled]="recipeForm.invalid">Create</button>
+  </form>
+</div>
