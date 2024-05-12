@@ -1,0 +1,139 @@
+/* Full CSS for comments component */
+
+.crud-panel {
+  position: relative;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-spacing: 0;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.input-fields input[type="number"],
+.input-fields input[type="text"] {
+  margin-top: 10px;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.button-search-container {
+  display: flex;
+  justify-content: space-between;
+  /* Align items at each end */
+  margin-bottom: 10px;
+  /* Adjust margin as needed */
+}
+
+/* Adjust the size and style of the search input */
+.searchText {
+  padding: 5px 11px;
+  /* Match the padding of the buttons */
+  font-size: 16px;
+  /* Match the font size of the buttons */
+}
+
+.action-buttons button {
+  margin-right: 8px;
+  padding: 8px 12px;
+}
+
+button {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+button:hover {
+  filter: brightness(0.9);
+}
+
+button.create-button {
+  background-color: #007bff !important;
+  color: #fff;
+}
+
+button.create-button:hover {
+  background-color: #0056b3 !important;
+}
+
+button.edit-button {
+  background-color: #ffc107 !important;
+  color: #212529;
+}
+
+button.edit-button:hover {
+  background-color: #d39e00 !important;
+}
+
+button.delete-button {
+  background-color: #dc3545 !important;
+  color: #fff;
+}
+
+button.delete-button:hover {
+  background-color: #bd2130 !important;
+}
+
+.form-container {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+}
+
+.form-container.active {
+  right: 0;
+}
+
+.form-container form {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container input[type="number"],
+.form-container input[type="text"] {
+  width: calc(100% - 16px);
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-buttons button {
+  padding: 8px 12px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.form-buttons button:hover {
+  filter: brightness(0.9);
+}

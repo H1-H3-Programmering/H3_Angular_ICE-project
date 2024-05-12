@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { UserPreferences } from '../../models/UserPreferences';
 import { ICEServiceService } from '../../services/ice-service.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-preferences',
   templateUrl: './user-preferences.component.html',
-  styleUrl: './user-preferences.component.css',
+  styleUrls: ['./user-preferences.component.css'],
 })
 export class UserPreferencesComponent {
   userPreferencesList: UserPreferences[] = [];
+  filteredUserPreferences: UserPreferences[] = [];
   userPreferenceForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingUserPreference: UserPreferences | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<UserPreferences>) {
     this.userPreferenceForm = new FormGroup({
@@ -21,7 +23,7 @@ export class UserPreferencesComponent {
         Validators.required,
         Validators.minLength(4),
       ]),
-      preferenceDisription: new FormControl('', [
+      preferenceDescription: new FormControl('', [
         Validators.required,
         Validators.minLength(4),
       ]),
@@ -35,42 +37,87 @@ export class UserPreferencesComponent {
   getAllUserPreferences(): void {
     this.service.getAllUserPreferences().subscribe((data) => {
       this.userPreferencesList = data;
-      console.log(data);
+      this.filteredUserPreferences = [...this.userPreferencesList]; // Initialize filteredUserPreferences with all user preferences
     });
   }
 
-  create(): void {
-    console.log(this.userPreferenceForm.value);
-    // Call the service method to create a user
-    this.service
-      .createUserPreference(this.userPreferenceForm.value)
-      .subscribe((response) => {
-        console.log('User Preference created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllUserPreferences();
-      });
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByUserPreferenceId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllUserPreferences();
-          // Optionally, update the categoryList after deletion
-          this.userPreferencesList = this.userPreferencesList.filter(
-            (userpreferences) => userpreferences.preferenceId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+  create(): void {
+    if (this.userPreferenceForm.valid) {
+      this.service
+        .createUserPreference(this.userPreferenceForm.value)
+        .subscribe(() => {
+          this.getAllUserPreferences(); // Refresh user preferences list
+          this.userPreferenceForm.reset(); // Clear form
+        });
     }
+  }
+
+  deletePreference(preferenceId: number | undefined): void {
+    if (preferenceId !== undefined) {
+      this.service.deleteByUserPreferenceId(preferenceId).subscribe(() => {
+        this.getAllUserPreferences();
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid preference ID');
+    }
+  }
+
+  editPreference(preference: UserPreferences): void {
+    this.editingUserPreference = preference;
+    this.userPreferenceForm.patchValue({
+      preferenceId: preference.preferenceId,
+      preferenceType: preference.preferenceType,
+      preferenceDescription: preference.preferenceDisription,
+    });
+    this.isFormVisible = true;
+  }
+
+  savePreference(): void {
+    if (this.userPreferenceForm.valid) {
+      const preferenceId = this.userPreferenceForm.value.preferenceId;
+      const preferenceType = this.userPreferenceForm.value.preferenceType;
+      const preferenceDescription =
+        this.userPreferenceForm.value.preferenceDescription;
+
+      if (this.editingUserPreference) {
+        const updatedPreference: UserPreferences = {
+          ...this.editingUserPreference,
+          preferenceId: preferenceId,
+          preferenceType: preferenceType,
+          preferenceDisription: preferenceDescription,
+        };
+
+        this.service.updateUserPreference(updatedPreference).subscribe(() => {
+          this.getAllUserPreferences();
+          this.cancelEdit();
+        });
+      } else {
+        this.create();
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingUserPreference = null;
+    this.userPreferenceForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchPreferences(): void {
+    this.filteredUserPreferences = this.userPreferencesList.filter(
+      (preference) =>
+        preference.preferenceType &&
+        preference.preferenceType
+          .toLowerCase()
+          .includes(this.searchText.toLowerCase())
+    );
   }
 }

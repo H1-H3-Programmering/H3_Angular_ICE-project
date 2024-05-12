@@ -1,23 +1,50 @@
-<p>language works!</p>
+<div class="crud-panel">
+  <h2>Languages Management</h2>
 
-<div>
-  <button (click)="getAllLanguages()">Get All</button>
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create Language</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchLanguages()">
+  </div>
+
+  <!-- Table to display languages -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Language Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let language of filteredLanguages">
+        <td>{{ language.languageId }}</td>
+        <td>{{ language.languageName }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editLanguage(language)">Edit</button>
+            <button class="delete-button" (click)="confirmDelete(language.languageId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let language of languageList" [ngValue]="language.languageId">{{ language.languageName }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="languageForm" (ngSubmit)="create()">
-    <input type="text" id="languageName" placeholder="Language Name" formControlName="languageName">
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="languageForm" (ngSubmit)="saveLanguage()">
+    <input type="text" placeholder="Language Name" formControlName="languageName">
     <div *ngIf="languageForm.get('languageName')?.invalid && (languageForm.get('languageName')?.dirty || languageForm.get('languageName')?.touched)">
       <span *ngIf="languageForm.get('languageName')?.errors?.['required']">Language Name is required.</span>
       <span *ngIf="languageForm.get('languageName')?.errors?.['minlength']">Language Name must be at least 4 characters long.</span>
     </div>
-    <button type="submit" [disabled]="languageForm.invalid">Create</button>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="languageForm.invalid">{{ editingLanguage ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

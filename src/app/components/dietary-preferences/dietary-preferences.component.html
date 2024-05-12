@@ -1,1 +1,48 @@
-<p>countries works!</p>
+<div class="crud-panel">
+  <h2>Dietary Preferences Management</h2>
+
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create Dietary Preference</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchDietaryPreferences()">
+  </div>
+
+  <!-- Table to display dietary preferences -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Preference</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let dietaryPreference of filteredDietaryPreferences">
+        <td>{{ dietaryPreference.preferenceId }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editDietaryPreference(dietaryPreference)">Edit</button>
+            <button class="delete-button" (click)="confirmDelete()">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="dietaryPreferencesForm" (ngSubmit)="saveDietaryPreference()">
+    <input type="number" placeholder="Preference ID" formControlName="preferenceId">
+    <div *ngIf="dietaryPreferencesForm.get('preferenceId')?.invalid && (dietaryPreferencesForm.get('preferenceId')?.dirty || dietaryPreferencesForm.get('preferenceId')?.touched)">
+      <span *ngIf="dietaryPreferencesForm.get('preferenceId')?.errors?.['required']">Preference ID is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="dietaryPreferencesForm.invalid">{{ editingDietaryPreference ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

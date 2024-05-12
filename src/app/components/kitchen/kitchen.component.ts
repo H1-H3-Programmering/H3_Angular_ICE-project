@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Kitchen } from '../../models/Kitchen';
 import { ICEServiceService } from '../../services/ice-service.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -6,63 +6,106 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-kitchen',
   templateUrl: './kitchen.component.html',
-  styleUrl: './kitchen.component.css',
+  styleUrls: ['./kitchen.component.css'],
 })
-export class KitchenComponent {
+export class KitchenComponent implements OnInit {
   kitchenList: Kitchen[] = [];
+  filteredKitchens: Kitchen[] = [];
   kitchenForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingKitchen: Kitchen | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<Kitchen>) {
     this.kitchenForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      name: new FormControl('', [Validators.required, Validators.minLength(1)]),
       countryId: new FormControl(null, [Validators.required]),
     });
   }
 
   ngOnInit(): void {
     this.getAllKitchens();
-    console.log(this.getAllKitchens);
   }
 
   getAllKitchens(): void {
     this.service.getAllKitchens().subscribe((data) => {
       this.kitchenList = data;
-      console.log(data);
+      this.filteredKitchens = [...this.kitchenList]; // Initialize filteredKitchens with all kitchens
     });
+  }
+
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
   create(): void {
-    console.log(this.kitchenForm.value);
-    // Call the service method to create a user
-    this.service.createKitchen(this.kitchenForm.value).subscribe((response) => {
-      console.log('Comment created successfully:', response);
-      // Optionally, you can refresh the user list after creation
-      this.getAllKitchens();
-    });
+    if (this.kitchenForm.valid) {
+      this.service
+        .createKitchen(this.kitchenForm.value)
+        .subscribe((response) => {
+          this.getAllKitchens(); // Refresh kitchen list
+          this.kitchenForm.reset(); // Clear form
+        });
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByKitchenId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllKitchens();
-          // Optionally, update the categoryList after deletion
-          this.kitchenList = this.kitchenList.filter(
-            (kitchen) => kitchen.kitchenId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
+  deleteKitchen(kitchenId: number | null): void {
+    if (kitchenId !== null) {
+      this.service.deleteByKitchenId(kitchenId).subscribe(() => {
+        this.getAllKitchens(); // Refresh kitchen list
+        this.cancelEdit();
+      });
     } else {
-      console.warn('No entity selected for deletion.');
+      console.error('Invalid kitchen ID');
     }
+  }
+
+  editKitchen(kitchen: Kitchen): void {
+    this.editingKitchen = kitchen;
+    this.kitchenForm.patchValue({
+      name: kitchen.name,
+      countryId: kitchen.countryId,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveKitchen(): void {
+    if (this.kitchenForm.valid) {
+      const name = this.kitchenForm.value.name;
+      const countryId = this.kitchenForm.value.countryId;
+
+      if (this.editingKitchen) {
+        const updatedKitchen: Kitchen = {
+          ...this.editingKitchen,
+          name: name,
+          countryId: countryId,
+        };
+
+        // Call the service's updateKitchen method
+        this.service.updateKitchen(updatedKitchen).subscribe(() => {
+          this.getAllKitchens(); // Refresh kitchen list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new kitchen
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingKitchen = null;
+    this.kitchenForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchKitchens(): void {
+    this.filteredKitchens = this.kitchenList.filter(
+      (kitchen) =>
+        kitchen.name &&
+        kitchen.name.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 }

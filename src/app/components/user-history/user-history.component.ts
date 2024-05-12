@@ -6,13 +6,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-user-history',
   templateUrl: './user-history.component.html',
-  styleUrl: './user-history.component.css',
+  styleUrls: ['./user-history.component.css'],
 })
 export class UserHistoryComponent {
   userHistoryList: UserHistory[] = [];
+  filteredUserHistory: UserHistory[] = [];
   userHistoryForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingUserHistory: UserHistory | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<UserHistory>) {
     this.userHistoryForm = new FormGroup({
@@ -28,42 +30,81 @@ export class UserHistoryComponent {
   getAllUserHistories(): void {
     this.service.getAllUserHistory().subscribe((data) => {
       this.userHistoryList = data;
-      console.log(data);
+      this.filteredUserHistory = [...this.userHistoryList];
     });
   }
 
-  create(): void {
-    console.log(this.userHistoryForm.value);
-    // Call the service method to create a user
-    this.service
-      .createUserHistory(this.userHistoryForm.value)
-      .subscribe((response) => {
-        console.log('User History created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllUserHistories();
-      });
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit();
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByUserHistoryId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
+  create(): void {
+    if (this.userHistoryForm.valid) {
+      this.service
+        .createUserHistory(this.userHistoryForm.value)
+        .subscribe((response) => {
           this.getAllUserHistories();
-          // Optionally, update the categoryList after deletion
-          this.userHistoryList = this.userHistoryList.filter(
-            (userhistories) => userhistories.userHistoryId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+          this.userHistoryForm.reset();
+        });
     }
+  }
+
+  deleteHistory(historyId: number | undefined): void {
+    if (historyId !== undefined) {
+      this.service.deleteByUserHistoryId(historyId).subscribe(() => {
+        this.getAllUserHistories();
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid history ID');
+    }
+  }
+
+  editHistory(history: UserHistory): void {
+    this.editingUserHistory = history;
+    this.userHistoryForm.patchValue({
+      userId: history.userId,
+      recipeId: history.recipeId,
+    });
+    this.isFormVisible = true;
+  }
+
+  saveHistory(): void {
+    if (this.userHistoryForm.valid) {
+      const userId = this.userHistoryForm.value.userId;
+      const recipeId = this.userHistoryForm.value.recipeId;
+
+      if (this.editingUserHistory) {
+        const updatedHistory: UserHistory = {
+          ...this.editingUserHistory,
+          userId: userId,
+          recipeId: recipeId,
+        };
+
+        this.service.updateUserHistory(updatedHistory).subscribe(() => {
+          this.getAllUserHistories();
+          this.cancelEdit();
+        });
+      } else {
+        this.create();
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingUserHistory = null;
+    this.userHistoryForm.reset();
+    this.isFormVisible = false;
+  }
+
+  searchHistory(): void {
+    this.filteredUserHistory = this.userHistoryList.filter(
+      (history) =>
+        history.userId &&
+        history.userId.toString().includes(this.searchText.toLowerCase())
+    );
   }
 }

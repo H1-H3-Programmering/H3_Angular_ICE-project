@@ -7,7 +7,4 @@ export class Recipe
   instructions?:string='';
   difficulty?:number=0;
   preperationTime?:number=0;
-// [JsonIgnore]public List<UserFavoriteRecipeJOIN>? UserFavorites { get; set; }
-// [JsonIgnore]public List<RecipeTag>? RecipeTag { get; set; }
-// [JsonIgnore]public List<Comments>? CommentId { get; set; }
 }

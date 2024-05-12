@@ -6,31 +6,36 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-recipe',
   templateUrl: './recipe.component.html',
-  styleUrl: './recipe.component.css',
+  styleUrls: ['./recipe.component.css'],
 })
 export class RecipeComponent {
   recipeList: Recipe[] = [];
+  filteredRecipes: Recipe[] = [];
   recipeForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingRecipe: Recipe | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<Recipe>) {
     this.recipeForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      name: new FormControl('', [Validators.required, Validators.minLength(1)]),
       description: new FormControl('', [
         Validators.required,
-        Validators.minLength(4),
+        Validators.minLength(1),
       ]),
       origin: new FormControl('', [
         Validators.required,
-        Validators.minLength(4),
+        Validators.minLength(1),
       ]),
       instructions: new FormControl('', [
         Validators.required,
-        Validators.minLength(4),
+        Validators.minLength(1),
       ]),
-      difficulty: new FormControl(null, [Validators.required]),
-      preperationTime: new FormControl(null, [Validators.required]),
+      difficulty: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(5),
+      ]),
+      preparationTime: new FormControl(null, [Validators.required]),
     });
   }
 
@@ -41,40 +46,89 @@ export class RecipeComponent {
   getAllRecipes(): void {
     this.service.getAllRecipes().subscribe((data) => {
       this.recipeList = data;
-      console.log(data);
+      this.filteredRecipes = [...this.recipeList];
     });
+  }
+
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit();
+    }
   }
 
   create(): void {
-    console.log(this.recipeForm.value);
-    // Call the service method to create a user
-    this.service.createRecipe(this.recipeForm.value).subscribe((response) => {
-      console.log('Comment created successfully:', response);
-      // Optionally, you can refresh the user list after creation
-      this.getAllRecipes();
-    });
+    if (this.recipeForm.valid) {
+      this.service.createRecipe(this.recipeForm.value).subscribe(() => {
+        this.getAllRecipes();
+        this.recipeForm.reset();
+      });
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByRecipeId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllRecipes();
-          // Optionally, update the categoryList after deletion
-          this.recipeList = this.recipeList.filter(
-            (recipes) => recipes.recipeId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
+  confirmDelete(recipeId: number | undefined): void {
+    if (recipeId !== undefined) {
+      this.service.deleteByRecipeId(recipeId).subscribe(() => {
+        this.getAllRecipes();
+        this.cancelEdit();
+      });
     } else {
-      console.warn('No entity selected for deletion.');
+      console.error('Invalid recipe ID');
     }
+  }
+
+  editRecipe(recipe: Recipe): void {
+    this.editingRecipe = recipe;
+    this.recipeForm.patchValue({
+      name: recipe.name,
+      description: recipe.description,
+      origin: recipe.origin,
+      instructions: recipe.instructions,
+      difficulty: recipe.difficulty,
+      preparationTime: recipe.preperationTime,
+    });
+    this.isFormVisible = true;
+  }
+
+  saveRecipe(): void {
+    if (this.recipeForm.valid) {
+      const name = this.recipeForm.value.name;
+      const description = this.recipeForm.value.description;
+      const origin = this.recipeForm.value.origin;
+      const instructions = this.recipeForm.value.instructions;
+      const difficulty = this.recipeForm.value.difficulty;
+      const preparationTime = this.recipeForm.value.preparationTime;
+
+      if (this.editingRecipe) {
+        const updatedRecipe: Recipe = {
+          ...this.editingRecipe,
+          name: name,
+          description: description,
+          origin: origin,
+          instructions: instructions,
+          difficulty: difficulty,
+          preperationTime: preparationTime,
+        };
+
+        this.service.updateRecipe(updatedRecipe).subscribe(() => {
+          this.getAllRecipes();
+          this.cancelEdit();
+        });
+      } else {
+        this.create();
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingRecipe = null;
+    this.recipeForm.reset();
+    this.isFormVisible = false;
+  }
+
+  searchRecipes(): void {
+    this.filteredRecipes = this.recipeList.filter((recipe) =>
+      recipe.name?.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 }

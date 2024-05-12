@@ -1,1 +1,47 @@
-<p>user-history works!</p>
+<div class="crud-panel">
+  <h2>User History Management</h2>
+
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create History</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchHistory()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Recipe ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let history of filteredUserHistory">
+        <td>{{ history.userId }}</td>
+        <td>{{ history.recipeId }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editHistory(history)">Edit</button>
+            <button class="delete-button" (click)="deleteHistory(history.userHistoryId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="userHistoryForm" (ngSubmit)="saveHistory()">
+    <input type="number" placeholder="User ID" formControlName="userId">
+    <input type="number" placeholder="Recipe ID" formControlName="recipeId">
+    <div *ngIf="userHistoryForm.get('userId')?.invalid && (userHistoryForm.get('userId')?.dirty || userHistoryForm.get('userId')?.touched)">
+      <span *ngIf="userHistoryForm.get('userId')?.errors?.['required']">User ID is required.</span>
+    </div>
+    <div *ngIf="userHistoryForm.get('recipeId')?.invalid && (userHistoryForm.get('recipeId')?.dirty || userHistoryForm.get('recipeId')?.touched)">
+      <span *ngIf="userHistoryForm.get('recipeId')?.errors?.['required']">Recipe ID is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="userHistoryForm.invalid">{{ editingUserHistory ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

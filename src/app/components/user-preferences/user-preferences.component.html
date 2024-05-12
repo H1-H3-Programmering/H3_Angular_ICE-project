@@ -1,29 +1,58 @@
-<p>user-preferences works!</p>
+<div class="crud-panel">
+  <h2>User Preferences Management</h2>
 
-<div>
-  <button (click)="getAllUserPreferences()">Get All</button>
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create Preference</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchPreferences()">
+  </div>
+
+  <!-- Table to display user preferences -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Preference Type</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let preference of filteredUserPreferences">
+        <td>{{ preference.preferenceId }}</td>
+        <td>{{ preference.preferenceType }}</td>
+        <td>{{ preference.preferenceDisription }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editPreference(preference)">Edit</button>
+            <button class="delete-button" (click)="deletePreference(preference.preferenceId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let preference of userPreferencesList" [ngValue]="preference.preferenceId">{{ preference.preferenceId }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="userPreferenceForm" (ngSubmit)="create()">
-    <input type="number" id="preferenceId" placeholder="Preference ID" formControlName="preferenceId">
-    <input type="text" id="preferenceType" placeholder="Preference Type" formControlName="preferenceType">
-    <input type="text" id="preferenceDisription" placeholder="Preference Description" formControlName="preferenceDisription">
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="userPreferenceForm" (ngSubmit)="savePreference()">
+    <input type="number" placeholder="Preference ID" formControlName="preferenceId">
+    <input type="text" placeholder="Preference Type" formControlName="preferenceType">
+    <input type="text" placeholder="Description" formControlName="preferenceDescription">
     <div *ngIf="userPreferenceForm.get('preferenceType')?.invalid && (userPreferenceForm.get('preferenceType')?.dirty || userPreferenceForm.get('preferenceType')?.touched)">
       <span *ngIf="userPreferenceForm.get('preferenceType')?.errors?.['required']">Preference Type is required.</span>
       <span *ngIf="userPreferenceForm.get('preferenceType')?.errors?.['minlength']">Preference Type must be at least 4 characters long.</span>
     </div>
-    <div *ngIf="userPreferenceForm.get('preferenceDisription')?.invalid && (userPreferenceForm.get('preferenceDisription')?.dirty || userPreferenceForm.get('preferenceDisription')?.touched)">
-      <span *ngIf="userPreferenceForm.get('preferenceDisription')?.errors?.['required']">Preference Description is required.</span>
-      <span *ngIf="userPreferenceForm.get('preferenceDisription')?.errors?.['minlength']">Preference Description must be at least 4 characters long.</span>
+    <div *ngIf="userPreferenceForm.get('preferenceDescription')?.invalid && (userPreferenceForm.get('preferenceDescription')?.dirty || userPreferenceForm.get('preferenceDescription')?.touched)">
+      <span *ngIf="userPreferenceForm.get('preferenceDescription')?.errors?.['required']">Description is required.</span>
+      <span *ngIf="userPreferenceForm.get('preferenceDescription')?.errors?.['minlength']">Description must be at least 4 characters long.</span>
     </div>
-    <button type="submit" [disabled]="userPreferenceForm.invalid">Create</button>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="userPreferenceForm.invalid">{{ editingUserPreference ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

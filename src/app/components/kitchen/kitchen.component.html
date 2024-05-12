@@ -1,22 +1,56 @@
-<p>kitchen works!</p>
+<div class="crud-panel">
+  <h2>Kitchens Management</h2>
 
-<div>
-  <button (click)="getAllKitchens()">Get All</button>
-</div>
-
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let kitchen of kitchenList" [value]="kitchen.kitchenId">{{ kitchen.name }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="kitchenForm" action="" (ngSubmit)="create()">
-    <input type="text" name="name" id="name" placeholder="Name" formControlName="name">
-    <input type="number" name="countryId" id="countryId" placeholder="Country Id" formControlName="countryId">
-    <div *ngIf="kitchenForm.get('name')?.invalid && (kitchenForm.get('name')?.dirty || kitchenForm.get('name')?.touched)">
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create Kitchen</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchKitchens()">
   </div>
-    <button type="submit" [disabled]="kitchenForm.invalid">Create</button>
+
+  <!-- Table to display kitchens -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Country ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let kitchen of filteredKitchens">
+        <td>{{ kitchen.kitchenId }}</td>
+        <td>{{ kitchen.name }}</td>
+        <td>{{ kitchen.countryId }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editKitchen(kitchen)">Edit</button>
+            <button class="delete-button" (click)="deleteKitchen(kitchen.kitchenId ?? null)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="kitchenForm" (ngSubmit)="saveKitchen()">
+    <input type="text" placeholder="Name" formControlName="name">
+    <input type="number" placeholder="Country ID" formControlName="countryId">
+    <div *ngIf="kitchenForm.get('name')?.invalid && (kitchenForm.get('name')?.dirty || kitchenForm.get('name')?.touched)">
+      <span *ngIf="kitchenForm.get('name')?.errors?.['required']">Name is required.</span>
+      <span *ngIf="kitchenForm.get('name')?.errors?.['minlength']">Name must be at least 1 character long.</span>
+    </div>
+    <div *ngIf="kitchenForm.get('countryId')?.invalid && (kitchenForm.get('countryId')?.dirty || kitchenForm.get('countryId')?.touched)">
+      <span *ngIf="kitchenForm.get('countryId')?.errors?.['required']">Country ID is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="kitchenForm.invalid">{{ editingKitchen ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

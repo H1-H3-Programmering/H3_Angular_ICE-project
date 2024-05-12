@@ -1,24 +1,50 @@
-<p>regions works!</p>
+<div class="crud-panel">
+  <h2>Regions Management</h2>
 
-<div>
-  <button (click)="getAllRegions()">Get All</button>
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create Region</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchRegions()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Region Name</th>
+        <th>Country ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let region of filteredRegions">
+        <td>{{ region.regionId }}</td>
+        <td>{{ region.regionName }}</td>
+        <td>{{ region.countryId }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editRegion(region)">Edit</button>
+            <button class="delete-button" (click)="confirmDelete(region.regionId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let region of regionsList" [value]="region.regionId">{{ region.regionName }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="regionForm" (ngSubmit)="create()">
-    <input type="number" name="regionId" id="regionId" placeholder="regionId" formControlName="regionId" required>
-    <input type="text" name="regionName" id="regionName" placeholder="regionName" formControlName="regionName" required>
-    <input type="number" name="countryId" id="countryId" placeholder="countryId" formControlName="countryId" required>
-    <div *ngIf="regionForm.get('text')?.invalid && (regionForm.get('text')?.dirty || regionForm.get('text')?.touched)">
-      Comment is required and should be at least 4 characters long.
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="regionForm" (ngSubmit)="saveRegion()">
+    <input type="text" placeholder="Region Name" formControlName="regionName">
+    <div *ngIf="regionForm.get('regionName')?.invalid && (regionForm.get('regionName')?.dirty || regionForm.get('regionName')?.touched)">
+      <span *ngIf="regionForm.get('regionName')?.errors?.['required']">Region Name is required.</span>
+      <span *ngIf="regionForm.get('regionName')?.errors?.['minlength']">Region Name must be at least 1 character long.</span>
     </div>
-    <button type="submit" [disabled]="regionForm.invalid">Create</button>
+    <input type="number" placeholder="Country ID" formControlName="countryId">
+    <div *ngIf="regionForm.get('countryId')?.invalid && (regionForm.get('countryId')?.dirty || regionForm.get('countryId')?.touched)">
+      <span *ngIf="regionForm.get('countryId')?.errors?.['required']">Country ID is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="regionForm.invalid">{{ editingRegion ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

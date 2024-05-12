@@ -6,13 +6,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-language',
   templateUrl: './language.component.html',
-  styleUrl: './language.component.css',
+  styleUrls: ['./language.component.css'],
 })
 export class LanguageComponent {
   languageList: Language[] = [];
+  filteredLanguages: Language[] = [];
   languageForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingLanguage: Language | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<Language>) {
     this.languageForm = new FormGroup({
@@ -30,42 +32,79 @@ export class LanguageComponent {
   getAllLanguages(): void {
     this.service.getAllLanguage().subscribe((data) => {
       this.languageList = data;
-      console.log(data);
+      this.filteredLanguages = [...this.languageList]; // Initialize filteredLanguages with all languages
     });
   }
 
-  create(): void {
-    console.log(this.languageForm.value);
-    // Call the service method to create a user
-    this.service
-      .createLanguage(this.languageForm.value)
-      .subscribe((response) => {
-        console.log('Language created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllLanguages();
-      });
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByLanguageId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllLanguages();
-          // Optionally, update the categoryList after deletion
-          this.languageList = this.languageList.filter(
-            (language) => language.languageId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+  create(): void {
+    if (this.languageForm.valid) {
+      this.service.createLanguage(this.languageForm.value).subscribe(() => {
+        this.getAllLanguages(); // Refresh language list
+        this.languageForm.reset(); // Clear form
+      });
     }
+  }
+
+  confirmDelete(languageId: number | undefined): void {
+    if (languageId !== undefined) {
+      this.service.deleteByLanguageId(languageId).subscribe(() => {
+        this.getAllLanguages(); // Refresh language list
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid language ID');
+    }
+  }
+
+  editLanguage(language: Language): void {
+    this.editingLanguage = language;
+    this.languageForm.patchValue({
+      languageName: language.languageName,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveLanguage(): void {
+    if (this.languageForm.valid) {
+      const languageName = this.languageForm.value.languageName;
+
+      if (this.editingLanguage) {
+        const updatedLanguage: Language = {
+          ...this.editingLanguage,
+          languageName: languageName,
+        };
+
+        // Call the service's updateLanguage method
+        this.service.updateLanguage(updatedLanguage).subscribe(() => {
+          this.getAllLanguages(); // Refresh language list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new language
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingLanguage = null;
+    this.languageForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchLanguages(): void {
+    this.filteredLanguages = this.languageList.filter(
+      (language) =>
+        language.languageName &&
+        language.languageName
+          .toLowerCase()
+          .includes(this.searchText.toLowerCase())
+    );
   }
 }

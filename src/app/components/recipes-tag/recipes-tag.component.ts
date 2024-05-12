@@ -6,18 +6,19 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-recipes-tag',
   templateUrl: './recipes-tag.component.html',
-  styleUrl: './recipes-tag.component.css',
+  styleUrls: ['./recipes-tag.component.css'],
 })
 export class RecipesTagComponent {
   recipesTagList: RecipesTag[] = [];
+  filteredRecipesTags: RecipesTag[] = [];
   recipeTagForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingRecipeTag: RecipesTag | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<RecipesTag>) {
     this.recipeTagForm = new FormGroup({
-      recipeId: new FormControl(null, [Validators.required]),
-      tag: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      tag: new FormControl('', [Validators.required, Validators.minLength(1)]),
     });
   }
 
@@ -28,42 +29,77 @@ export class RecipesTagComponent {
   getAllRecipeTags(): void {
     this.service.getAllRecipesTag().subscribe((data) => {
       this.recipesTagList = data;
-      console.log(data);
+      this.filteredRecipesTags = [...this.recipesTagList]; // Initialize filteredRecipesTags with all tags
     });
   }
 
-  create(): void {
-    console.log(this.recipeTagForm.value);
-    // Call the service method to create a user
-    this.service
-      .createRecipeTag(this.recipeTagForm.value)
-      .subscribe((response) => {
-        console.log('Recipe Tag created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllRecipeTags();
-      });
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByRecipeTagId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllRecipeTags();
-          // Optionally, update the categoryList after deletion
-          this.recipesTagList = this.recipesTagList.filter(
-            (recipeTags) => recipeTags.recipeTagId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+  create(): void {
+    if (this.recipeTagForm.valid) {
+      this.service.createRecipeTag(this.recipeTagForm.value).subscribe(() => {
+        this.getAllRecipeTags(); // Refresh tags list
+        this.recipeTagForm.reset(); // Clear form
+      });
     }
+  }
+
+  deleteRecipeTag(recipeTagId: number | undefined): void {
+    if (recipeTagId !== undefined) {
+      this.service.deleteByRecipeTagId(recipeTagId).subscribe(() => {
+        this.getAllRecipeTags(); // Refresh tags list
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid tag ID');
+    }
+  }
+
+  editRecipeTag(recipeTag: RecipesTag): void {
+    this.editingRecipeTag = recipeTag;
+    this.recipeTagForm.patchValue({
+      tag: recipeTag.tag,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveRecipeTag(): void {
+    if (this.recipeTagForm.valid) {
+      const tag = this.recipeTagForm.value.tag;
+
+      if (this.editingRecipeTag) {
+        const updatedRecipeTag: RecipesTag = {
+          ...this.editingRecipeTag,
+          tag: tag,
+        };
+
+        // Call the service's updateRecipeTag method
+        this.service.updateRecipeTag(updatedRecipeTag).subscribe(() => {
+          this.getAllRecipeTags(); // Refresh tags list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new tag
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingRecipeTag = null;
+    this.recipeTagForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchRecipesTags(): void {
+    this.filteredRecipesTags = this.recipesTagList.filter(
+      (recipeTag) =>
+        recipeTag.tag &&
+        recipeTag.tag.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 }

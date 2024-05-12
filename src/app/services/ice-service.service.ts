@@ -63,9 +63,71 @@ export class ICEServiceService<ICEentity> {
     return this.http.put(url, comment);
   }
 
-  updateCountry(countrie: Countries): Observable<any> {
-    const url = `${this.urlCountry}/${countrie.countryId}`;
-    return this.http.put(url, countrie);
+  updateCountry(countries: Countries): Observable<any> {
+    const url = `${this.urlCountry}/${countries.countryId}`;
+    return this.http.put(url, countries);
+  }
+
+  updateDietaryPreference(
+    dietaryPreference: DietaryPreferences
+  ): Observable<any> {
+    const url = `${this.urlDietaryPreference}/${dietaryPreference.dietaryPreferenceId}`;
+    return this.http.put(url, dietaryPreference);
+  }
+
+  updateIngredient(ingredients: Ingredient): Observable<any> {
+    const url = `${this.urlIngredient}/${ingredients.ingredientsId}`;
+    return this.http.put(url, ingredients);
+  }
+
+  updateKitchen(kitchen: Kitchen): Observable<any> {
+    const url = `${this.urlKitchen}/${kitchen.kitchenId}`;
+    return this.http.put(url, kitchen);
+  }
+
+  updateLanguage(language: Language): Observable<any> {
+    const url = `${this.urlLanguage}/${language.languageId}`;
+    return this.http.put(url, language);
+  }
+
+  updateRecipe(recipe: Recipe): Observable<any> {
+    const url = `${this.urlRecipe}/${recipe.recipeId}`;
+    return this.http.put(url, recipe);
+  }
+
+  updateRecipeTag(recipeTag: RecipesTag): Observable<any> {
+    const url = `${this.urlRecipeTag}/${recipeTag.recipeTagId}`;
+    return this.http.put(url, recipeTag);
+  }
+
+  updateRegion(region: Regions): Observable<any> {
+    const url = `${this.urlRegion}/${region.regionId}`;
+    return this.http.put(url, region);
+  }
+
+  updateReview(review: Review): Observable<any> {
+    const url = `${this.urlReview}/${review.reviewId}`;
+    return this.http.put(url, review);
+  }
+
+  updateUserFavorite(UserFavorite: UserFavorite): Observable<any> {
+    const url = `${this.urlUserFavorite}/${UserFavorite.userFavoriteId}`;
+    return this.http.put(url, UserFavorite);
+  }
+
+  updateUserHistory(userHistory: UserHistory): Observable<any> {
+    const url = `${this.urlUserHistory}/${userHistory.userHistoryId}`;
+    return this.http.put(url, userHistory);
+  }
+
+  updateUserPreference(userPreferences: UserPreferences): Observable<any> {
+    const url = `${this.urlUserPreference}/${userPreferences.preferenceId}`;
+    return this.http.put(url, userPreferences);
+  }
+
+  updateUser(user: Users): Observable<any> {
+    const url = `${this.urlUsers}/${user.userId}`;
+    return this.http.put(url, user);
   }
 
   getAllIngredients(): Observable<Ingredient[]> {
@@ -220,7 +282,6 @@ export class ICEServiceService<ICEentity> {
   }
 
   createRecipeTag(recipeTag: RecipesTag): Observable<any> {
-    // Assuming your API endpoint for creating a user is POST /users
     return this.http.post<any>(this.urlRecipeTag, recipeTag);
   }
 

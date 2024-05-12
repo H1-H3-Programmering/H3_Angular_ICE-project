@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { UserFavorite } from '../../models/UserFavorite';
 import { ICEServiceService } from '../../services/ice-service.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-favorite',
   templateUrl: './user-favorite.component.html',
-  styleUrl: './user-favorite.component.css',
+  styleUrls: ['./user-favorite.component.css'],
 })
 export class UserFavoriteComponent {
   userFavoriteList: UserFavorite[] = [];
+  filteredUserFavorites: UserFavorite[] = [];
   userFavoriteForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingUserFavorite: UserFavorite | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<UserFavorite>) {
     this.userFavoriteForm = new FormGroup({
@@ -27,42 +29,82 @@ export class UserFavoriteComponent {
   getAllUserFavorites(): void {
     this.service.getAllUserFavorites().subscribe((data) => {
       this.userFavoriteList = data;
-      console.log(data);
+      this.filteredUserFavorites = [...this.userFavoriteList]; // Initialize filteredUserFavorites with all user favorites
     });
   }
 
-  create(): void {
-    console.log(this.userFavoriteForm.value);
-    // Call the service method to create a user
-    this.service
-      .createComment(this.userFavoriteForm.value)
-      .subscribe((response) => {
-        console.log('User Favorite created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllUserFavorites();
-      });
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByUserFavoriteId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllUserFavorites();
-          // Optionally, update the categoryList after deletion
-          this.userFavoriteList = this.userFavoriteList.filter(
-            (userFavorites) => userFavorites.userFavoriteId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
-    } else {
-      console.warn('No entity selected for deletion.');
+  create(): void {
+    if (this.userFavoriteForm.valid) {
+      this.service
+        .createComment(this.userFavoriteForm.value)
+        .subscribe((response) => {
+          this.getAllUserFavorites(); // Refresh user favorite list
+          this.userFavoriteForm.reset(); // Clear form
+        });
     }
+  }
+
+  confirmDelete(userFavoriteId: number | undefined): void {
+    if (userFavoriteId !== undefined) {
+      this.service.deleteByUserFavoriteId(userFavoriteId).subscribe(() => {
+        this.getAllUserFavorites(); // Refresh user favorite list
+        this.cancelEdit();
+      });
+    } else {
+      console.error('Invalid user favorite ID');
+    }
+  }
+
+  editUserFavorite(userFavorite: UserFavorite): void {
+    this.editingUserFavorite = userFavorite;
+    this.userFavoriteForm.patchValue({
+      userId: userFavorite.userId,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveUserFavorite(): void {
+    if (this.userFavoriteForm.valid) {
+      const userId = this.userFavoriteForm.value.userId;
+
+      if (this.editingUserFavorite) {
+        const updatedUserFavorite: UserFavorite = {
+          ...this.editingUserFavorite,
+          userId: userId,
+        };
+
+        // Call the service's updateUserFavorite method
+        this.service.updateUserFavorite(updatedUserFavorite).subscribe(() => {
+          this.getAllUserFavorites(); // Refresh user favorite list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new user favorite
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingUserFavorite = null;
+    this.userFavoriteForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchUserFavorites(): void {
+    this.filteredUserFavorites = this.userFavoriteList.filter(
+      (userFavorite) =>
+        userFavorite.userId &&
+        userFavorite.userId
+          .toString()
+          .toLowerCase()
+          .includes(this.searchText.toLowerCase())
+    );
   }
 }

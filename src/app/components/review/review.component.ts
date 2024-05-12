@@ -6,13 +6,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-review',
   templateUrl: './review.component.html',
-  styleUrl: './review.component.css',
+  styleUrls: ['./review.component.css'],
 })
 export class ReviewComponent {
   reviewList: Review[] = [];
+  filteredReviews: Review[] = [];
   reviewForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingReview: Review | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<Review>) {
     this.reviewForm = new FormGroup({
@@ -33,40 +35,87 @@ export class ReviewComponent {
   getAllReviews(): void {
     this.service.getAllReviews().subscribe((data) => {
       this.reviewList = data;
-      console.log(data);
+      this.filteredReviews = [...this.reviewList]; // Initialize filteredReviews with all reviews
     });
+  }
+
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
   }
 
   create(): void {
-    console.log(this.reviewForm.value);
-    // Call the service method to create a user
-    this.service.createReview(this.reviewForm.value).subscribe((response) => {
-      console.log('Review created successfully:', response);
-      // Optionally, you can refresh the user list after creation
-      this.getAllReviews();
-    });
+    if (this.reviewForm.valid) {
+      this.service.createReview(this.reviewForm.value).subscribe(() => {
+        this.getAllReviews(); // Refresh review list
+        this.reviewForm.reset(); // Clear form
+      });
+    }
   }
 
-  confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByReviewId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllReviews();
-          // Optionally, update the categoryList after deletion
-          this.reviewList = this.reviewList.filter(
-            (reviews) => reviews.reviewId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
+deleteReview(reviewId: number | undefined): void {
+    if (reviewId !== undefined) {
+      this.service.deleteByReviewId(reviewId).subscribe(() => {
+        this.getAllReviews(); // Refresh review list
+        this.cancelEdit();
+      });
     } else {
-      console.warn('No entity selected for deletion.');
+      console.error('Invalid review ID');
     }
+}
+
+
+  editReview(review: Review): void {
+    this.editingReview = review;
+    this.reviewForm.patchValue({
+      rating: review.rating,
+      comment: review.comment,
+      userId: review.userId,
+      recipeId: review.recipeId,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveReview(): void {
+    if (this.reviewForm.valid) {
+      const rating = this.reviewForm.value.rating;
+      const comment = this.reviewForm.value.comment;
+      const userId = this.reviewForm.value.userId;
+      const recipeId = this.reviewForm.value.recipeId;
+
+      if (this.editingReview) {
+        const updatedReview: Review = {
+          ...this.editingReview,
+          rating: rating,
+          comment: comment,
+          userId: userId,
+          recipeId: recipeId,
+        };
+
+        // Call the service's updateReview method
+        this.service.updateReview(updatedReview).subscribe(() => {
+          this.getAllReviews(); // Refresh review list
+          this.cancelEdit();
+        });
+      } else {
+        this.create(); // Call the create method for new review
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingReview = null;
+    this.reviewForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchReviews(): void {
+    this.filteredReviews = this.reviewList.filter(
+      (review) =>
+        review.comment &&
+        review.comment.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 }

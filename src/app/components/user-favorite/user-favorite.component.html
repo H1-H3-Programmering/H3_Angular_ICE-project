@@ -1,22 +1,47 @@
-<p>User Favorite works!</p>
+<div class="crud-panel">
+  <h2>User Favorites Management</h2>
 
-<div>
-  <button (click)="getAllUserFavorites()">Get All</button>
+  <div class="button-search-container">
+    <!-- Create Button -->
+    <button class="create-button" (click)="toggleForm()">Create User Favorite</button>
+    <!-- Search Input -->
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchUserFavorites()">
+  </div>
+
+  <!-- Table to display user favorites -->
+  <table>
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <tr *ngFor="let userFavorite of filteredUserFavorites">
+        <td>{{ userFavorite.userId }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editUserFavorite(userFavorite)">Edit</button>
+            <button class="delete-button" (click)="confirmDelete(userFavorite.userId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<div>
-  <select [(ngModel)]="selectedEntityId">
-    <option *ngFor="let userFavorite of userFavoriteList" [ngValue]="userFavorite.userFavoriteId">{{ userFavorite.userFavoriteId }}</option>
-  </select>
-  <button (click)="confirmDelete()">Confirm Delete</button>
-</div>
-
-<div>
-  <form [formGroup]="userFavoriteForm" (ngSubmit)="create()">
-    <input type="number" id="userId" placeholder="User ID" formControlName="userId">
+<!-- Form Container -->
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="userFavoriteForm" (ngSubmit)="saveUserFavorite()">
+    <input type="number" placeholder="User ID" formControlName="userId">
     <div *ngIf="userFavoriteForm.get('userId')?.invalid && (userFavoriteForm.get('userId')?.dirty || userFavoriteForm.get('userId')?.touched)">
       <span *ngIf="userFavoriteForm.get('userId')?.errors?.['required']">User ID is required.</span>
     </div>
-    <button type="submit" [disabled]="userFavoriteForm.invalid">Create</button>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="userFavoriteForm.invalid">{{ editingUserFavorite ? 'Save' : 'Create' }}</button>
+    </div>
   </form>
 </div>

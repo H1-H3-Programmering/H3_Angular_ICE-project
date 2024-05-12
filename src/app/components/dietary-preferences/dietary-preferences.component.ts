@@ -6,65 +6,111 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-dietary-preferences',
   templateUrl: './dietary-preferences.component.html',
-  styleUrl: './dietary-preferences.component.css',
+  styleUrls: ['./dietary-preferences.component.css'],
 })
 export class DietaryPreferencesComponent {
   dietaryPreferencesList: DietaryPreferences[] = [];
+  filteredDietaryPreferences: DietaryPreferences[] = [];
   dietaryPreferencesForm: FormGroup;
-  selectedEntityId: number | null = null; // Property to store the selected entity ID
-  showCommentsBtn: boolean = false;
+  editingDietaryPreference: DietaryPreferences | null = null;
+  isFormVisible: boolean = false;
+  searchText: string = '';
 
   constructor(private service: ICEServiceService<DietaryPreferences>) {
     this.dietaryPreferencesForm = new FormGroup({
-      preferenceId: new FormControl(null, [Validators.required]),
+      preferenceId: new FormControl('', [Validators.required]),
     });
   }
 
   ngOnInit(): void {
     this.getAllDietaryPreferences();
-    console.log(this.getAllDietaryPreferences);
   }
 
   getAllDietaryPreferences(): void {
     this.service.getAllDietaryPreferences().subscribe((data) => {
       this.dietaryPreferencesList = data;
-      console.log(data);
+      this.filteredDietaryPreferences = [...this.dietaryPreferencesList]; // Initialize filteredDietaryPreferences with all dietary preferences
     });
   }
 
+  toggleForm(): void {
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.cancelEdit(); // Reset form if hiding the form
+    }
+  }
+
   create(): void {
-    console.log(this.dietaryPreferencesForm.value);
-    // Call the service method to create a user
-    this.service
-      .createDietaryPreference(this.dietaryPreferencesForm.value)
-      .subscribe((response) => {
-        console.log('Dietary Preference created successfully:', response);
-        // Optionally, you can refresh the user list after creation
-        this.getAllDietaryPreferences();
-      });
+    if (this.dietaryPreferencesForm.valid) {
+      this.service
+        .createDietaryPreference(this.dietaryPreferencesForm.value)
+        .subscribe((response) => {
+          this.getAllDietaryPreferences(); // Refresh dietary preferences list
+          this.dietaryPreferencesForm.reset(); // Clear form
+        });
+    }
   }
 
   confirmDelete(): void {
-    if (this.selectedEntityId !== null) {
-      // Call the deleteById method with the selectedEntityId
-      this.service.deleteByDietaryPreferenceId(this.selectedEntityId).subscribe(
-        () => {
-          console.log('Entity deleted successfully');
-          this.getAllDietaryPreferences();
-          // Optionally, update the categoryList after deletion
-          this.dietaryPreferencesList = this.dietaryPreferencesList.filter(
-            (dietaryPreference) =>
-              dietaryPreference.dietaryPreferenceId !== this.selectedEntityId
-          );
-          // Reset the selectedEntityId after deletion
-          this.selectedEntityId = null;
-        },
-        (error) => {
-          console.error('Error deleting entity:', error);
-        }
-      );
+    if (this.editingDietaryPreference?.preferenceId !== undefined) {
+      this.service
+        .deleteByDietaryPreferenceId(
+          this.editingDietaryPreference?.preferenceId
+        )
+        .subscribe(() => {
+          this.getAllDietaryPreferences(); // Refresh dietary preferences list
+          this.cancelEdit();
+        });
     } else {
-      console.warn('No entity selected for deletion.');
+      console.error('Invalid dietary preference ID');
     }
+  }
+
+  editDietaryPreference(dietaryPreference: DietaryPreferences): void {
+    this.editingDietaryPreference = dietaryPreference;
+    this.dietaryPreferencesForm.patchValue({
+      preferenceId: dietaryPreference.preferenceId,
+    });
+    this.isFormVisible = true; // Show the form
+  }
+
+  saveDietaryPreference(): void {
+    if (this.dietaryPreferencesForm.valid) {
+      const preferenceId = this.dietaryPreferencesForm.value.preferenceId;
+
+      if (this.editingDietaryPreference) {
+        const updatedDietaryPreference: DietaryPreferences = {
+          ...this.editingDietaryPreference,
+          preferenceId: preferenceId,
+        };
+
+        // Call the service's updateDietaryPreference method
+        this.service
+          .updateDietaryPreference(updatedDietaryPreference)
+          .subscribe(() => {
+            this.getAllDietaryPreferences(); // Refresh dietary preferences list
+            this.cancelEdit();
+          });
+      } else {
+        this.create(); // Call the create method for new dietary preference
+      }
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingDietaryPreference = null;
+    this.dietaryPreferencesForm.reset();
+    this.isFormVisible = false; // Close the form
+  }
+
+  searchDietaryPreferences(): void {
+    this.filteredDietaryPreferences = this.dietaryPreferencesList.filter(
+      (dietaryPreference) =>
+        dietaryPreference.preferenceId &&
+        dietaryPreference.preferenceId
+          .toString()
+          .toLowerCase()
+          .includes(this.searchText.toLowerCase())
+    );
   }
 }
