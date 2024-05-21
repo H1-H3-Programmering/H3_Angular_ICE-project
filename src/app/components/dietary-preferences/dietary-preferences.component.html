@@ -2,15 +2,11 @@
   <h2>Dietary Preferences Management</h2>
 
   <div class="button-search-container">
-    <!-- Create Button -->
-    <button class="create-button" (click)="toggleForm()">Create Dietary Preference</button>
-    <!-- Search Input -->
+    <button class="create-button" (click)="toggleForm()">Create</button>
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchDietaryPreferences()">
   </div>
 
-  <!-- Table to display dietary preferences -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -18,7 +14,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let dietaryPreference of filteredDietaryPreferences">
         <td>{{ dietaryPreference.preferenceId }}</td>

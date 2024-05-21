@@ -1,18 +1,12 @@
-<p>Ingredient works!</p>
-
 <div class="crud-panel">
   <h2>Ingredients Management</h2>
 
   <div class="button-search-container">
-    <!-- Create Button -->
-    <button class="create-button" (click)="toggleForm()">Create Ingredient</button>
-    <!-- Search Input -->
+    <button class="create-button" (click)="toggleForm()">Create</button>
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchIngredients()">
   </div>
 
-  <!-- Table to display ingredients -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -20,7 +14,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let ingredient of filteredIngredients">
         <td>{{ ingredient.ingredientsId }}</td>
@@ -36,7 +29,6 @@
   </table>
 </div>
 
-<!-- Form Container -->
 <div class="form-container" [ngClass]="{'active': isFormVisible}">
   <form [formGroup]="ingredientForm" (ngSubmit)="saveIngredient()">
     <input type="text" placeholder="Ingredient Name" formControlName="name">

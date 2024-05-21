@@ -2,15 +2,11 @@
   <h2>Languages Management</h2>
 
   <div class="button-search-container">
-    <!-- Create Button -->
-    <button class="create-button" (click)="toggleForm()">Create Language</button>
-    <!-- Search Input -->
+    <button class="create-button" (click)="toggleForm()">Create</button>
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchLanguages()">
   </div>
 
-  <!-- Table to display languages -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -18,7 +14,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let language of filteredLanguages">
         <td>{{ language.languageId }}</td>
@@ -34,7 +29,6 @@
   </table>
 </div>
 
-<!-- Form Container -->
 <div class="form-container" [ngClass]="{'active': isFormVisible}">
   <form [formGroup]="languageForm" (ngSubmit)="saveLanguage()">
     <input type="text" placeholder="Language Name" formControlName="languageName">

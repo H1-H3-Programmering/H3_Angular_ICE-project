@@ -2,15 +2,11 @@
   <h2>Comments Management</h2>
 
   <div class="button-search-container">
-    <!-- Create Button -->
-    <button class="create-button" (click)="toggleForm()">Create Comment</button>
-    <!-- Search Input -->
+    <button class="create-button" (click)="toggleForm()">Create</button>
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchComments()">
   </div>
 
-  <!-- Table to display comments -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -20,7 +16,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let comment of filteredComments">
         <td>{{ comment.commentId }}</td>
@@ -38,7 +33,6 @@
   </table>
 </div>
 
-<!-- Form Container -->
 <div class="form-container" [ngClass]="{'active': isFormVisible}">
   <form [formGroup]="commentsForm" (ngSubmit)="saveComment()">
     <input type="number" placeholder="User ID" formControlName="userId">

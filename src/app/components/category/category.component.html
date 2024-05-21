@@ -3,15 +3,11 @@
 
 
   <div class="button-search-container">
-    <!-- Create Button -->
-    <button class="create-button" (click)="toggleForm()">Create Comment</button>
-    <!-- Search Input -->
+    <button class="create-button" (click)="toggleForm()">Create</button>
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchCategories()">
   </div>
 
-  <!-- Table to display categories -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -19,7 +15,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let category of filteredCategories">
         <td>{{ category.categoryId }}</td>
@@ -35,7 +30,6 @@
   </table>
 </div>
 
-<!-- Form Container -->
 <div class="form-container" [ngClass]="{'active': isFormVisible}">
   <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
     <input type="text" placeholder="Name" formControlName="name">

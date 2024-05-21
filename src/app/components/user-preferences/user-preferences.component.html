@@ -2,15 +2,11 @@
   <h2>User Preferences Management</h2>
 
   <div class="button-search-container">
-    <!-- Create Button -->
     <button class="create-button" (click)="toggleForm()">Create Preference</button>
-    <!-- Search Input -->
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchPreferences()">
   </div>
 
-  <!-- Table to display user preferences -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -19,7 +15,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let preference of filteredUserPreferences">
         <td>{{ preference.preferenceId }}</td>
@@ -36,7 +31,6 @@
   </table>
 </div>
 
-<!-- Form Container -->
 <div class="form-container" [ngClass]="{'active': isFormVisible}">
   <form [formGroup]="userPreferenceForm" (ngSubmit)="savePreference()">
     <input type="number" placeholder="Preference ID" formControlName="preferenceId">

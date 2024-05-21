@@ -2,15 +2,11 @@
   <h2>Kitchens Management</h2>
 
   <div class="button-search-container">
-    <!-- Create Button -->
-    <button class="create-button" (click)="toggleForm()">Create Kitchen</button>
-    <!-- Search Input -->
+    <button class="create-button" (click)="toggleForm()">Create</button>
     <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchKitchens()">
   </div>
 
-  <!-- Table to display kitchens -->
   <table>
-    <!-- Table headers -->
     <thead>
       <tr>
         <th>ID</th>
@@ -19,7 +15,6 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <!-- Table body -->
     <tbody>
       <tr *ngFor="let kitchen of filteredKitchens">
         <td>{{ kitchen.kitchenId }}</td>
@@ -36,7 +31,6 @@
   </table>
 </div>
 
-<!-- Form Container -->
 <div class="form-container" [ngClass]="{'active': isFormVisible}">
   <form [formGroup]="kitchenForm" (ngSubmit)="saveKitchen()">
     <input type="text" placeholder="Name" formControlName="name">
