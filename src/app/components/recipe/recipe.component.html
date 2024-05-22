@@ -1,1 +1,61 @@
-<p>recipe works!</p>
+<div class="crud-panel">
+  <h2>Recipe Management</h2>
+
+<div class="button-search-container">
+  <button class="create-button" (click)="toggleForm()">Create</button>
+  <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchRecipes()">
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Origin</th>
+      <th>Instructions</th>
+      <th>Difficulty</th>
+      <th>Preparation Time</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let recipe of filteredRecipes">
+      <td>{{ recipe.recipeId }}</td>
+      <td>{{ recipe.name }}</td>
+      <td>{{ recipe.description }}</td>
+      <td>{{ recipe.origin }}</td>
+      <td>{{ recipe.instructions }}</td>
+      <td>{{ recipe.difficulty }}</td>
+      <td>{{ recipe.preperationTime }}</td>
+      <td>
+        <div class="action-buttons">
+          <button class="edit-button" (click)="editRecipe(recipe)">Edit</button>
+          <button class="delete-button" (click)="confirmDelete(recipe.recipeId)">Delete</button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="recipeForm" (ngSubmit)="saveRecipe()">
+    <input type="text" placeholder="Name" formControlName="name">
+    <input type="text" placeholder="Description" formControlName="description">
+    <input type="text" placeholder="Origin" formControlName="origin">
+    <textarea placeholder="Instructions" formControlName="instructions"></textarea>
+    <input type="number" placeholder="Difficulty" formControlName="difficulty">
+    <div *ngIf="recipeForm.get('difficulty')?.invalid && (recipeForm.get('difficulty')?.dirty || recipeForm.get('difficulty')?.touched)">
+      <span *ngIf="recipeForm.get('difficulty')?.errors?.['required']">Difficulty is required.</span>
+      <span *ngIf="recipeForm.get('difficulty')?.errors?.['maxlength']">Difficulty must be maximum 5 characters long.</span>
+    </div>
+    <input type="number" placeholder="Preparation Time" formControlName="preparationTime">
+    <div *ngIf="recipeForm.get('preparationTime')?.invalid && (recipeForm.get('preparationTime')?.dirty || recipeForm.get('preparationTime')?.touched)">
+      <span *ngIf="recipeForm.get('preparationTime')?.errors?.['required']">Preparation Time is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="recipeForm.invalid">{{ editingRecipe ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

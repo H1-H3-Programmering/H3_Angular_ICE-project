@@ -1,1 +1,44 @@
-<p>ingredient works!</p>
+<div class="crud-panel">
+  <h2>Ingredients Management</h2>
+
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchIngredients()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ingredient of filteredIngredients">
+        <td>{{ ingredient.ingredientsId }}</td>
+        <td>{{ ingredient.name }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editIngredient(ingredient)">Edit</button>
+            <button class="delete-button" (click)="deleteIngredient(ingredient.ingredientsId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="ingredientForm" (ngSubmit)="saveIngredient()">
+    <input type="text" placeholder="Ingredient Name" formControlName="name">
+    <div *ngIf="ingredientForm.get('name')?.invalid && (ingredientForm.get('name')?.dirty || ingredientForm.get('name')?.touched)">
+      <span *ngIf="ingredientForm.get('name')?.errors?.['required']">Name is required.</span>
+      <span *ngIf="ingredientForm.get('name')?.errors?.['minlength']">Name must be at least 1 character long.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="ingredientForm.invalid">{{ editingIngredient ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

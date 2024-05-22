@@ -1,10 +1,10 @@
 export class Review
 {
-ReviewId?:number=0;
-Rating?:number=0;
-Comment?:string='';
-UserId?:number=0;
+reviewId?:number=0;
+rating?:number=0;
+comment?:string='';
+userId?:number=0;
 // [JsonIgnore] public Users? User { get; set; }
-RecipeId?:number=0;
+recipeId?:number=0;
 // [JsonIgnore] public Recipe? Recipe { get; set; }
 }

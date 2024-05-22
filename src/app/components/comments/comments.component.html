@@ -1,0 +1,56 @@
+<div class="crud-panel">
+  <h2>Comments Management</h2>
+
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchComments()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Recipe ID</th>
+        <th>Text</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let comment of filteredComments">
+        <td>{{ comment.commentId }}</td>
+        <td>{{ comment.userId }}</td>
+        <td>{{ comment.recipeId }}</td>
+        <td>{{ comment.text }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editComment(comment)">Edit</button>
+            <button class="delete-button" (click)="deleteComment(comment.commentId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="commentsForm" (ngSubmit)="saveComment()">
+    <input type="number" placeholder="User ID" formControlName="userId">
+    <input type="number" placeholder="Recipe ID" formControlName="recipeId">
+    <input type="text" placeholder="Text" formControlName="text">
+    <div *ngIf="commentsForm.get('userId')?.invalid && (commentsForm.get('userId')?.dirty || commentsForm.get('userId')?.touched)">
+      <span *ngIf="commentsForm.get('userId')?.errors?.['required']">User ID is required.</span>
+    </div>
+    <div *ngIf="commentsForm.get('recipeId')?.invalid && (commentsForm.get('recipeId')?.dirty || commentsForm.get('recipeId')?.touched)">
+      <span *ngIf="commentsForm.get('recipeId')?.errors?.['required']">Recipe ID is required.</span>
+    </div>
+    <div *ngIf="commentsForm.get('text')?.invalid && (commentsForm.get('text')?.dirty || commentsForm.get('text')?.touched)">
+      <span *ngIf="commentsForm.get('text')?.errors?.['required']">Text is required.</span>
+      <span *ngIf="commentsForm.get('text')?.errors?.['minlength']">Text must be at least 4 characters long.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="commentsForm.invalid">{{ editingComment ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

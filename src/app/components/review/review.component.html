@@ -1,1 +1,56 @@
-<p>review works!</p>
+<div class="crud-panel">
+  <h2>Review Management</h2>
+
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchReviews()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>User ID</th>
+        <th>Recipe ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let review of filteredReviews">
+        <td>{{ review.reviewId }}</td>
+        <td>{{ review.rating }}</td>
+        <td>{{ review.comment }}</td>
+        <td>{{ review.userId }}</td>
+        <td>{{ review.recipeId }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editReview(review)">Edit</button>
+            <button class="delete-button" (click)="deleteReview(review.reviewId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="reviewForm" (ngSubmit)="saveReview()">
+    <input type="number" placeholder="Rating" formControlName="rating">
+    <input type="text" placeholder="Comment" formControlName="comment">
+    <input type="number" placeholder="User ID" formControlName="userId">
+    <input type="number" placeholder="Recipe ID" formControlName="recipeId">
+    <div *ngIf="reviewForm.get('rating')?.invalid && (reviewForm.get('rating')?.dirty || reviewForm.get('rating')?.touched)">
+      <span *ngIf="reviewForm.get('rating')?.errors?.['required']">Rating is required.</span>
+    </div>
+    <div *ngIf="reviewForm.get('comment')?.invalid && (reviewForm.get('comment')?.dirty || reviewForm.get('comment')?.touched)">
+      <span *ngIf="reviewForm.get('comment')?.errors?.['required']">Comment is required.</span>
+      <span *ngIf="reviewForm.get('comment')?.errors?.['minlength']">Comment must be at least 4 characters long.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="reviewForm.invalid">{{ editingReview ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

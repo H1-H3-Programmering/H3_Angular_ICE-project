@@ -1,1 +1,57 @@
-<p>users works!</p>
+<div class="crud-panel">
+  <h2>Users Management</h2>
+
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create User</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchUsers()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of filteredUsers">
+        <td>{{ user.userId }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.password }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editUser(user)">Edit</button>
+            <button class="delete-button" (click)="deleteUser(user.userId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+    <input type="text" placeholder="Username" formControlName="username">
+    <input type="email" placeholder="Email" formControlName="email">
+    <input type="password" placeholder="Password" formControlName="password">
+    <div *ngIf="userForm.get('username')?.invalid && (userForm.get('username')?.dirty || userForm.get('username')?.touched)">
+      <span *ngIf="userForm.get('username')?.errors?.['required']">Username is required.</span>
+    </div>
+    <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)">
+      <span *ngIf="userForm.get('email')?.errors?.['required']">Email is required.</span>
+      <span *ngIf="userForm.get('email')?.errors?.['email']">Invalid email format.</span>
+    </div>
+    <div *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)">
+      <span *ngIf="userForm.get('password')?.errors?.['required']">Password is required.</span>
+      <span *ngIf="userForm.get('password')?.errors?.['minlength']">Password must be at least 4 characters long.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="userForm.invalid">{{ editingUser ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>

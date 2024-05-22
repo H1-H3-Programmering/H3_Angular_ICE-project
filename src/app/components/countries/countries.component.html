@@ -1,0 +1,49 @@
+<div class="crud-panel">
+  <h2>Countries Management</h2>
+
+  <div class="button-search-container">
+    <button class="create-button" (click)="toggleForm()">Create</button>
+    <input class="searchText" placeholder="Search..." [(ngModel)]="searchText" (input)="searchCountries()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Country Name</th>
+        <th>Continent</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let country of filteredCountries">
+        <td>{{ country.countryId }}</td>
+        <td>{{ country.countryName }}</td>
+        <td>{{ country.continent }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-button" (click)="editCountry(country)">Edit</button>
+            <button class="delete-button" (click)="deleteCountry(country.countryId)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-container" [ngClass]="{'active': isFormVisible}">
+  <form [formGroup]="countryForm" (ngSubmit)="saveCountry()">
+    <input type="text" placeholder="Country Name" formControlName="countryName">
+    <input type="text" placeholder="Continent" formControlName="continent">
+    <div *ngIf="countryForm.get('countryName')?.invalid && (countryForm.get('countryName')?.dirty || countryForm.get('countryName')?.touched)">
+      <span *ngIf="countryForm.get('countryName')?.errors?.['required']">Country Name is required.</span>
+    </div>
+    <div *ngIf="countryForm.get('continent')?.invalid && (countryForm.get('continent')?.dirty || countryForm.get('continent')?.touched)">
+      <span *ngIf="countryForm.get('continent')?.errors?.['required']">Continent is required.</span>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="delete-button" (click)="cancelEdit()">Cancel</button>
+      <button type="submit" class="create-button" [disabled]="countryForm.invalid">{{ editingCountry ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>
